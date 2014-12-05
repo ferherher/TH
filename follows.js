@@ -1,14 +1,10 @@
 (function ( $ ){
 
 	var key		= 'vTij3orvHd4oT7dl31HQXaNFap85row4X9CbqD79tSEV8e7b', // Unique master Xively API key to be used as a default
-	var TH_feed	= '2029082394', // Comma separated array of Xively Feed ID numbers
-	var TH_datastreams	=['Exterior','Temperature','Calorifier'],
-		applicationName	= 'TH', // Replaces Xively logo in the header
+		TH_feed	= '2029082394', // Comma separated array of Xively Feed ID numbers
+		TH_datastreams	= ['Exterior'],
 		dataDuration	= '1day', // Default duration of data to be displayed // ref: https://xively.com/dev/docs/api/data/read/historical_data/
-		dataInterval	= 0, // Default interval for data to be displayed (in seconds)
-		dataColor		= '', // CSS HEX value of color to represent data (omit leading #)
-		hideForm		= 1; // To hide input form use value of 1, otherwise set to 0
-
+		dataInterval	= 60;// Default interval for data to be displayed (in seconds)
 // Function Declarations
 
 
@@ -50,57 +46,31 @@
 	}
 
 	function updateFeeds(feedId, datastreamIds, duration, interval) {
+
 		xively.feed.get(feedId, function(feedData) {
+
 			if(feedData.datastreams) {
-				var series = [];
+				
 				feedData.datastreams.forEach(function(datastream) {
-					var now = new Date();
-					var then = new Date();
-					var updated = new Date;
-					updated = updated.parseISO(datastream.at);
-					var diff = null;
-					if(duration == '6hours') diff = 21600000;
-					if(duration == '1day') diff = 86400000;
-					if(duration == '1week') diff = 604800000;
-					if(duration == '1month') diff = 2628000000;
-					if(duration == '90days') diff = 7884000000;
-					then.setTime(now.getTime() - diff);
-					if(updated.getTime() > then.getTime()) {
-						if(datastreamIds && datastreamIds != '' && datastreamIds.indexOf(datastream.id) >= 0) {
+
+					if(datastreamIds && datastreamIds != '' && datastreamIds.indexOf(datastream.id) >= 0) {
+						var now = new Date();
+						var then = new Date();
+						var updated = new Date;
+						updated = updated.parseISO(datastream.at);
+						var diff = null;
+						if(duration == '6hours') diff = 21600000;
+						if(duration == '1day') diff = 86400000;
+						if(duration == '1week') diff = 604800000;
+						if(duration == '1month') diff = 2628000000;
+						if(duration == '90days') diff = 7884000000;
+						then.setTime(now.getTime() - diff);
+						if(updated.getTime() > then.getTime()) {
+							points = [];
+							console.log('Datastream requested! (' + datastream.id + ')');
+						
 							xively.datastream.history(feedId, datastream.id, {duration: duration, interval: interval, limit: 1000}, function(datastreamData) {
-
-
-								var points = [];
-
-								// Create Datastream UI
-								$('.datastream-' + datastream.id).empty();
-								$('.datastream-' + datastream.id).remove();
-								$('#feed-' + feedId + ' .datastream.hidden').clone().appendTo('#feed-' + feedId + ' .datastreams').addClass('datastream-' + datastream.id).removeClass('hidden');
-
-								// Check for Datastream Tags
-								var tagsHtml = '';
-								if(datastreamData.tags) {
-									tagsHtml = '<div style="font-size: 14px;"><span class="radius secondary label">' + datastreamData.tags.join('</span> <span class="radius secondary label">') + '</span></div>';
-								} else {
-									tagsHtml = '';
-								}
-
-								// Fill Datastream UI with Data
-								$('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .datastream-name').html(datastream.id);
-								$('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .datastream-value').html(datastream.current_value);
-
-								// Include Datastream Unit (If Available)
-								if(datastream.unit) {
-									if(datastream.unit.symbol) {
-										$('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .datastream-value').html(datastream.current_value + datastream.unit.symbol);
-									} else {
-										$('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .datastream-value').html(datastream.current_value);
-									}
-								} else {
-									$('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .datastream-value').html(datastream.current_value);
-								}
-								$('.datastream-' + datastream.id).removeClass('hidden');
-
+					var mySeries = []
 								// Historical Datapoints
 								if(datastreamData.datapoints) {
 
@@ -108,84 +78,99 @@
 									datastreamData.datapoints.forEach(function(datapoint) {
 										points.push({x: new Date(datapoint.at).getTime()/1000.0, y: parseFloat(datapoint.value)});
 									});
+								}
+							// Add Datapoints Array to Graph Series Array
+							mySeries.push({
+								name: datastream.id,
+								data: points,
+								color: 'steelblue',
+							});
+							
+							
+							// Create Datastream UI
+							$('.datastream-feed' ).empty();
+							$('.datastream-feed' ).remove();
+							$('#feed-' + feedId + ' .datastream.hidden').clone().appendTo('#feed-' + feedId + ' .datastreams').addClass('.datastream-feed' ).removeClass('hidden');
+							
+							$('.datastream').removeClass('hidden');
+							// Fill Datastream UI with Data
+							$('#feed-' + feedId + ' .datastreams.datastream-feed.datastream-name').html('my feed');
+							$('#feed-' + feedId + ' .datastreams.datastream-feed.datastream-value').html('values');
+							
+							// Initialize Graph DOM Element
+							$('#feed-' + feedId + ' .graph').attr('id', 'graph-' + feedId );
+							console.log('final :(');
+							console.log(mySeries);
+							// Build Graph
+							var graph = new Rickshaw.Graph( {
+								element: document.querySelector('#graph-' + feedId),
+								width: 700,
+								height: 400,
+								renderer: 'line',
+								
+								min: -5.0,
+								max: 40.0,
+								padding: {
+									top: 0.02,
+									right: 0.02,
+									bottom: 0.02,
+									left: 0.02
+								},
+								series: mySeries
 
-									// Add Datapoints Array to Graph Series Array
-									series.push({
-										name: datastream.id,
-										data: points,
-										color: 'steelblue',
-									});
+							});
 
+							graph.render();
 
-								} else {
-									$('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .graphWrapper').addClass('hidden');
+							var ticksTreatment = 'glow';
+
+							// Define and Render X Axis (Time Values)
+							var xAxis = new Rickshaw.Graph.Axis.Time( {
+								graph: graph,
+								ticksTreatment: ticksTreatment
+							});
+							xAxis.render();
+
+							// Define and Render Y Axis (Datastream Values)
+							var yAxis = new Rickshaw.Graph.Axis.Y( {
+								graph: graph,
+								tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+								ticksTreatment: ticksTreatment
+							});
+							yAxis.render();
+
+							// Enable Datapoint Hover Values
+							var hoverDetail = new Rickshaw.Graph.HoverDetail({
+								graph: graph,
+								formatter: function(series, x, y) {
+									var swatch = '<span class="detail_swatch" style="background-color: ' + series.color + ' padding: 4px;"></span>';
+									var content = swatch + "&nbsp;&nbsp;" + parseFloat(y) + '&nbsp;&nbsp;<br>';
+									return content;
 								}
 							});
+
+							$('#feed-' + feedId +  ' .slider').prop('id', 'slider-' + feedId);
+							var slider = new Rickshaw.Graph.RangeSlider({
+								graph: graph,
+								element: $('#slider-' + feedId)
+							});
+								
+								
+								
+							});
+
+							
+							
 						} else {
-							console.log('Datastream not requested! (' + datastream.id + ')');
+							$('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .graphWrapper').html('<div class="alert alert-box no-info">Sorry, this datastream does not have any associated data.</div>');
 						}
 					} else {
-						$('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .graphWrapper').html('<div class="alert alert-box no-info">Sorry, this datastream does not have any associated data.</div>');
+						console.log('Datastream not requested! (' + datastream.id + ')');
 					}
 				});
 				
 				
-				
-				// Initialize Graph DOM Element
-				$('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .graph').attr('id', 'graph-' + feedId + '-' + datastream.id);
 
-				// Build Graph
-				var graph = new Rickshaw.Graph( {
-					element: document.querySelector('#graph-' + feedId + '-' + datastream.id),
-					width: 600,
-					height: 200,
-					renderer: 'line',
-					
-					min: parseFloat(datastream.min_value) - .25*(parseFloat(datastream.max_value) - parseFloat(datastream.min_value)),
-					max: parseFloat(datastream.max_value) + .25*(parseFloat(datastream.max_value) - parseFloat(datastream.min_value)),
-					padding: {
-						top: 0.02,
-						right: 0.02,
-						bottom: 0.02,
-						left: 0.02
-					},
-					series: series
-				});
-
-				graph.render();
-
-				var ticksTreatment = 'glow';
-
-				// Define and Render X Axis (Time Values)
-				var xAxis = new Rickshaw.Graph.Axis.Time( {
-					graph: graph,
-					ticksTreatment: ticksTreatment
-				});
-				xAxis.render();
-
-				// Define and Render Y Axis (Datastream Values)
-				var yAxis = new Rickshaw.Graph.Axis.Y( {
-					graph: graph,
-					tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-					ticksTreatment: ticksTreatment
-				});
-				yAxis.render();
-
-				// Enable Datapoint Hover Values
-				var hoverDetail = new Rickshaw.Graph.HoverDetail({
-					graph: graph,
-					formatter: function(series, x, y) {
-						var swatch = '<span class="detail_swatch" style="background-color: ' + series.color + ' padding: 4px;"></span>';
-						var content = swatch + "&nbsp;&nbsp;" + parseFloat(y) + '&nbsp;&nbsp;<br>';
-						return content;
-					}
-				});
-
-				$('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .slider').prop('id', 'slider-' + feedId + '-' + datastream.id);
-				var slider = new Rickshaw.Graph.RangeSlider({
-					graph: graph,
-					element: $('#slider-' + feedId + '-' + datastream.id)
-				});
 				
 			}
 			$('#loadingData').foundation('reveal', 'close');
@@ -193,13 +178,12 @@
 	}
 
 	function setFeeds(TH_feed, TH_datastreams) {
-		$('#welcome').addClass('hidden');
 		id = TH_feed;
 
 		if($('#feed-' + id)) {
 			$('#feed-' + id).remove();
 		}
-		xively.feed.history(id, {  duration: "1day", interval: 60 }, function (data) {
+		xively.feed.history(id, {  duration: "6hours", interval: 30 }, function (data) {
 			if(data.id == id) {
 				// Duplicate Example to Build Feed UI
 				$('#exampleFeed').clone().appendTo('#feeds').attr('id', 'feed-' + id).removeClass('hidden');
@@ -268,61 +252,15 @@
 // END Function Declarations
 
 // BEGIN Initialization
-	if(hideForm == 1) {
-		$('#form').hide();
-	}
 
 	var today = new Date();
 	var yesterday = new Date(today.getTime()-1000*60*60*24*1);
 	var lastWeek = new Date(today.getTime()-1000*60*60*24*7);
 
-	if(applicationName != '') {
-		$('h1').html(applicationName).css('color', 'white');
-		document.title = applicationName + ' - Powered by Xively';
-	}
-
-	if(dataColor == '') {
-		dataColor = '0A1922';
-	}
-
 
 	setApiKey(key);
-	setFeeds(TH_feed);
+	setFeeds(TH_feed,TH_datastreams);
 
-
-	if(key != '') {
-		$("#apiKeyInput").prop('disabled', true);
-	}
-
-	$('#apiKeyInput').change(function() {
-		if($('#apiKeyInput').val() == '') {
-			$('#welcome').addClass('hidden');
-			$('#invalidApiKey').removeClass('hidden');
-			$('#validApiKey').addClass('hidden');
-		} else {
-			xively.setKey($('#apiKeyInput').val());
-			xively.feed.get(61916, function(data) {
-				if(data.id == 61916) {
-					$("#apiKeyInput").prop('disabled', true);
-					$('#welcome').addClass('hidden');
-					$('#validApiKey').removeClass('hidden');
-					$('#invalidApiKey').addClass('hidden');
-				} else {
-					$('#welcome').addClass('hidden');
-					$('#validApiKey').addClass('hidden');
-					$('#invalidApiKey').removeClass('hidden');
-				}
-			});
-		}
-		return false;
-	});
-
-	$('#setFeeds').click(function() {
-		setApiKey($('#apiKeyInput').val());
-		TH_feed = $('#feedsInput').val().replace(/\s+/g, '').split(',');
-		window.location = './index.html#key=' + $('#apiKeyInput').val() + '&feeds=' + $('#feedsInput').val();
-		return false;
-	});
 // END Initialization
 
 })( jQuery );

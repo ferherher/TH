@@ -24,7 +24,7 @@
 			max-width: 100%;
 			min-height: 100%;
 			overflow-x: hidden;
-			background: #666 url(img/loading.gif) center center no-repeat;
+			background: #666;
 		}
 		.hidden {
 			display: none;
@@ -67,7 +67,7 @@
 		<div class="row">
 			<div class="large-12 columns">
 				<h1 style="color: #FFF; text-shadow: 0px 1px 0px #000;">
-					Visualizing Xively Feeds
+					TH
 				</h1>
 			</div>
 		</div>
@@ -75,13 +75,27 @@
 	<!-- Page Content -->
 	<div id="xivelyContent" style="position: relative;">
 		<div id="feeds">
+			<div class="feed hidden" id="exampleFeedNotFound" style="line-height: 25px; padding-top: 25px;">
+				<div class="row title">
+					<div class="large-12 columns">
+						<h2 class="subheader value">Loading Feed Data...</h2>
+
+						<div class="alert alert-box no-info">
+							Sorry, this feed could not be found.
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="feed hidden" id="exampleFeed" style="line-height: 25px; padding-top: 25px;">
 				<div class="row title">
 					<div class="large-12 columns">
 						<h2 class="subheader value">Loading Feed Data...</h2>
 					</div>
 				</div>
-
+				<div class="row updated">
+					<div class="large-4 columns"><strong>Updated</strong></div>
+					<div class="large-8 columns value"></div>
+				</div>
 				<div class="row">
 					<div class="large-12 columns">
 						<div class="button-group" style="float: right;">
