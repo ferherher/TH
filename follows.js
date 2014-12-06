@@ -71,13 +71,17 @@
 				$('#feed .datastreams .graph').attr('id', 'graph');
 				$('#feed .datastreams .legend').empty();
 				$('#feed .datastreams .legend').attr('id', 'legend');
+				$('#feed .datastreams .legendSwitch').empty();
+				$('#feed .datastreams .legendSwitch').attr('id', 'legendSwitch');
+				
+				
 				// Build Graph
 				var graph = new Rickshaw.Graph( {
 					element: document.querySelector('#graph'),
 					width: 700,
 					height: 400,
 					renderer: 'line',
-					
+					interpolation: 'linear',
 					min: minVal,
 					padding: {
 						top: 0.02,
@@ -91,7 +95,6 @@
 				});
 
 				graph.render();
-				
 				
 				var legend = document.querySelector('#legend');
 
@@ -132,37 +135,39 @@
 
 						}, this );
 						}
+						
+						
 				});
 				
 				var hover = new Hover( { graph: graph } ); 
-				/*
 				
 				
 				
 				
 				
 				
-				var legend = new Rickshaw.Graph.Legend( {
+				
+				var legendSwitch = new Rickshaw.Graph.Legend( {
 					graph: graph,
-					element: document.getElementById('legend')
+					element: document.getElementById('legendSwitch')
 
 				} );
 				
 				var shelving = new Rickshaw.Graph.Behavior.Series.Toggle( {
 					graph: graph,
-					legend: legend
+					legend: legendSwitch
 				} );
 
 				var order = new Rickshaw.Graph.Behavior.Series.Order( {
 					graph: graph,
-					legend: legend
+					legend: legendSwitch
 				} );
 
 				var highlight = new Rickshaw.Graph.Behavior.Series.Highlight( {
 					graph: graph,
-					legend: legend
+					legend: legendSwitch
 				} );
-				*/
+				
 				var ticksTreatment = 'inverse';
 
 				// Define and Render X Axis (Time Values)
@@ -181,7 +186,7 @@
 				yAxis.render();
 
 				// Enable Datapoint Hover Values
-				/*
+				
 				var hoverDetail = new Rickshaw.Graph.HoverDetail({
 					graph: graph,
 					formatter: function(series, x, y) {
@@ -192,7 +197,7 @@
 					
 					
 				});
-				*/
+				
 				$('#feed .datastreams.datastreams .slider').prop('id', 'slider');
 				var slider = new Rickshaw.Graph.RangeSlider({
 					graph: graph,
@@ -218,8 +223,8 @@
 						var updated = new Date;
 						updated = updated.parseISO(datastream.at);
 						var diff = null;
-						if(duration == '6hours') diff = 21600000;
 						if(duration == '1day') diff = 86400000;
+						if(duration == '2days') diff = 172800000;
 						if(duration == '1week') diff = 604800000;
 						if(duration == '1month') diff = 2628000000;
 						if(duration == '90days') diff = 7884000000;
@@ -249,7 +254,7 @@
 										name:datastream.id,
 										data: points,
 										color: mycolor,
-										renderer : myrenderer
+										renderer : myrenderer,
 								});
 								
 							});
@@ -271,7 +276,7 @@
 
 			}
 
-			$('#loadingData').foundation('reveal', 'close');
+
 		});
 
 	}
@@ -286,38 +291,34 @@
 				// Date Updated
 				$('#feed .updated .value').html(data.updated);
 
-				
-				$('#feed .duration-hour').click(function() {
-					mySeries = []
-					$('#loadingData').foundation('reveal', 'open');
-					updateFeeds(data.id, TH_datastreams, '6hours', 30);
-					return false;
-				});
 
 				$('#feed .duration-day').click(function() {
 					mySeries = []
-					$('#loadingData').foundation('reveal', 'open');
 					updateFeeds(data.id, TH_datastreams, '1day', 60);
 					return false;
 				});
+				
+				$('#feed .duration-2days').click(function() {
+					mySeries = []
 
+					updateFeeds(data.id, TH_datastreams, '2days', 120);
+					return false;
+				});
+				
 				$('#feed .duration-week').click(function() {
 					mySeries = []
-					$('#loadingData').foundation('reveal', 'open');
 					updateFeeds(data.id, TH_datastreams, '1week', 900);
 					return false;
 				});
 
 				$('#feed .duration-month').click(function() {
 					mySeries = []
-					$('#loadingData').foundation('reveal', 'open');
 					updateFeeds(data.id, TH_datastreams, '1month', 1800);
 					return false;
 				});
 
 				$('#feed .duration-90').click(function() {
 					mySeries = []
-					$('#loadingData').foundation('reveal', 'open');
 					updateFeeds(data.id, TH_datastreams, '90days', 10800);
 					return false;
 				});

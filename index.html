@@ -14,7 +14,6 @@
 	<meta name="viewport" content="width=device-width" />
 	<title>My Feed</title>
 
-	<link type="text/css" rel="stylesheet" href="css/normalize.css" />
 	<link type="text/css" rel="stylesheet" href="css/foundation.min.css" />
 	<link type="text/css" rel="stylesheet" href="css/rickshaw.min.css">
 	
@@ -25,7 +24,7 @@
 			max-width: 100%;
 			min-height: 100%;
 			overflow-x: hidden;
-			background: #666;
+			background: #20292f;
 		}
 		.hidden {
 			display: none;
@@ -35,9 +34,7 @@
 
 		}
 		
-		#chart_container {
-			width: 960px;
-		}
+
 		.swatch {
 			display: inline-block;
 			width: 10px;
@@ -70,7 +67,7 @@
 </head>
 <body>
 
-	<!-- Header -->
+	<!-- Header 
 	<div style="background: #2b373f;">
 		<div class="row">
 			<div class="large-12 columns">
@@ -80,33 +77,34 @@
 			</div>
 		</div>
 	</div>
+	-->
 	<!-- Page Content -->
-	<div id="Content" style="position: relative; background: #36454F;">
+	<div id="Content" style="position: relative; background: #36454F; color:#aeb4b8;">
 
-			<div class="feed" id="feed" style="line-height: 25px; padding-top: 25px;">
-				<div class="row updated">
+			<div class="feed" id="feed" style="line-height: 25px;">
+				<div class="row updated" style=" background: #2b373f;  padding-top: 15px; padding-bottom: 15px;">
 					<div class="large-1 columns" style="font-size: 12px;"><strong>Updated: </strong></div>
 					<div class="large-3 columns value" style="font-size: 12px;"></div>
 
 						<div class="large-6 columns button-group" style="float: right;">
-							<a href="#" class="small button secondary duration-hour">6 Hrs</a>
 							<a href="#" class="small button secondary duration-day">Day</a>
+							<a href="#" class="small button secondary duration-2days">2 Days</a>
 							<a href="#" class="small button secondary duration-week">Week</a>
 							<a href="#" class="small button secondary duration-month">Month</a>
 							<a href="#" class="small button secondary duration-90">90 Days</a>
 						</div>
 				</div>
 				<div class="row">
-					<div class="large-12 columns">
-						<div class="datastreams" style="padding-bottom: 15px;">
 
-								<hr/>
+						<div class="datastreams" style="padding-bottom: 15px; ">
+
+
 								<div class="row">
 									<div class="large-5 columns datastream-value subheader" style="font-size: 24px; text-align: right;">
 										Values
 									</div>
 								</div>
-								<div class="row">
+								<div class="row" style="padding-left: 20px; padding-bottom: 15px; ">
 									<div class="large-12 columns">
 
 										<div class="graph" >
@@ -114,22 +112,25 @@
 
 										<div class="slider" >
 										</div>
-										<div id="legend_container">
+
+									</div>
+									
+								</div>
+								
+										<div id="legend_container" style=" background: #2b373f;  padding-top: 15px; padding-bottom: 15px;">
 											<div id="smoother" title="Smoothing"></div>
 											<div class="legend"></div>
+											<div class="legendSwitch"></div>
 										</div>
-									</div>
-								</div>
-
 						</div>
-					</div>
-					<hr/>
+
+
 				</div>
 			</div>
 
 	</div>
 
-	<!-- Footer -->
+	<!-- Footer 
 	<div style="background: #0D1B23;">
 		<div style="padding: 15px;">
 			<div class="row">
@@ -141,19 +142,13 @@
 			</div>
 		</div>
 	</div>
-
+	-->
 	<!-- Modals -->
 	<div id="loadingData" class="reveal-modal small text-center">
 		<br/><br/><h2 class="subheader">Loading...</h2><br/><br/>
 	</div>
 
-	<script>
-		document.write('<script src=' +
-		('__proto__' in {} ? 'js/zepto' : 'js/jquery') +
-		'.js><\/script>')
-	</script>
 
-	<script src="js/foundation.min.js"></script>
 	<script src="follows.js"></script>
 
 </body>
