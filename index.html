@@ -30,8 +30,8 @@
 			display: none;
 		}
 		#Content {
-			background: #fff;
-			box-shadow: inset 0px 0px 100px #f0f0f0;
+			background: #36454F;
+
 		}
 
 	</style>
@@ -47,38 +47,30 @@
 <body>
 
 	<!-- Header -->
-	<div style="background: #101C24;">
+	<div style="background: #2b373f;">
 		<div class="row">
 			<div class="large-12 columns">
-				<h1 style="color: #FFF; text-shadow: 0px 1px 0px #000;">
+				<h1 style="color: #727c83; text-shadow: 0px 1px 0px #000;">
 					TH
 				</h1>
 			</div>
 		</div>
 	</div>
 	<!-- Page Content -->
-	<div id="Content" style="position: relative;">
+	<div id="Content" style="position: relative; background: #36454F;">
 
 			<div class="feed" id="feed" style="line-height: 25px; padding-top: 25px;">
-				<div class="row title">
-					<div class="large-12 columns">
-						<h2 class="subheader value">Loading Feed Data...</h2>
-					</div>
-				</div>
 				<div class="row updated">
-					<div class="large-4 columns"><strong>Updated</strong></div>
-					<div class="large-8 columns value"></div>
-				</div>
-				<div class="row">
-					<div class="large-12 columns">
-						<div class="button-group" style="float: right;">
+					<div class="large-1 columns" style="font-size: 12px;"><strong>Updated: </strong></div>
+					<div class="large-3 columns value" style="font-size: 12px;"></div>
+
+						<div class="large-6 columns button-group" style="float: right;">
 							<a href="#" class="small button secondary duration-hour">6 Hrs</a>
 							<a href="#" class="small button secondary duration-day">Day</a>
 							<a href="#" class="small button secondary duration-week">Week</a>
 							<a href="#" class="small button secondary duration-month">Month</a>
 							<a href="#" class="small button secondary duration-90">90 Days</a>
 						</div>
-					</div>
 				</div>
 				<div class="row">
 					<div class="large-12 columns">
@@ -86,24 +78,21 @@
 
 								<hr/>
 								<div class="row">
-									<div class="large-9 columns datastream-name subheader" style="font-size: 24px;">
-										Datastream Name
-									</div>
-									<div class="large-3 columns datastream-value subheader" style="font-size: 24px; text-align: right;">
-										420
+									<div class="large-5 columns datastream-value subheader" style="font-size: 24px; text-align: right;">
+										Values
 									</div>
 								</div>
 								<div class="row">
 									<div class="large-12 columns">
 
-										<div class="graph" style="width: 600px; margin: auto;">
+										<div class="graph" >
 										</div>
 
-										<div class="slider" style="width: 600px; height: 15px; margin: auto;">
+										<div class="slider" >
 										</div>
 										<div id="legend_container">
 											<div id="smoother" title="Smoothing"></div>
-											<div id="legend"></div>
+											<div class="legend"></div>
 										</div>
 									</div>
 								</div>

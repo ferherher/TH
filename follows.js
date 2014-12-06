@@ -49,79 +49,94 @@
 
 	
 	function createGraph() {
-		console.log(mySeries);
+
 		var interval = setInterval(function(){
 			if(mySeries.length == TH_datastreams.length) {
+				var allTemps = []
 
-		// Initialize Graph DOM Element
-		$('#feed .datastreams .graph').empty();
-		$('#feed .datastreams .graph').attr('id', 'graph');
-		// Build Graph
-		var graph = new Rickshaw.Graph( {
-			element: document.querySelector('#graph'),
-			width: 700,
-			height: 400,
-			renderer: 'line',
-			
-			min: -5.0,
-			padding: {
-				top: 0.02,
-				right: 0.02,
-				bottom: 0.02,
-				left: 0.02
-				},
-			series: mySeries
+				mySeries.forEach(function(thisSeries) {
+					myData = thisSeries.data
+					myData.forEach(function(thisData) {
+						allTemps.push(thisData.y);
+					});
+				});
+				var minVal  = Math.min.apply(Math, allTemps)
+				var maxVal = Math.max.apply(Math, allTemps)
+				// Fill Datastream UI with Data
+				$('#feed .datastreams .datastream-value').html('min: ' + minVal + ' | max: ' + maxVal);
+				console.log(minVal)
+				console.log(maxVal)
+				// Initialize Graph DOM Element
+				$('#feed .datastreams .graph').empty();
+				$('#feed .datastreams .graph').attr('id', 'graph');
+				$('#feed .datastreams .legend').empty();
+				$('#feed .datastreams .legend').attr('id', 'legend');
+				// Build Graph
+				var graph = new Rickshaw.Graph( {
+					element: document.querySelector('#graph'),
+					width: 700,
+					height: 400,
+					renderer: 'line',
+					
+					min: minVal,
+					padding: {
+						top: 0.02,
+						right: 0.02,
+						bottom: 0.02,
+						left: 0.02
+						},
+					series: mySeries
 
 
-		});
+				});
 
-		graph.render();
-		
-		var legend = new Rickshaw.Graph.Legend( {
-			graph: graph,
-			element: document.getElementById('legend')
+				graph.render();
+				
+				var legend = new Rickshaw.Graph.Legend( {
+					graph: graph,
+					element: document.getElementById('legend')
 
-		} );
+				} );
 
-		var shelving = new Rickshaw.Graph.Behavior.Series.Toggle( {
-			graph: graph,
-			legend: legend
-		} );
+				var shelving = new Rickshaw.Graph.Behavior.Series.Toggle( {
+					graph: graph,
+					legend: legend
+				} );
 
-		var order = new Rickshaw.Graph.Behavior.Series.Order( {
-			graph: graph,
-			legend: legend
-		} );
+				var order = new Rickshaw.Graph.Behavior.Series.Order( {
+					graph: graph,
+					legend: legend
+				} );
 
-		var highlight = new Rickshaw.Graph.Behavior.Series.Highlight( {
-			graph: graph,
-			legend: legend
-		} );
-		
-		var ticksTreatment = 'glow';
+				var highlight = new Rickshaw.Graph.Behavior.Series.Highlight( {
+					graph: graph,
+					legend: legend
+				} );
+				
+				var ticksTreatment = 'inverse';
 
-		// Define and Render X Axis (Time Values)
-		var xAxis = new Rickshaw.Graph.Axis.Time( {
-			graph: graph,
-			ticksTreatment: ticksTreatment
-		});
-		xAxis.render();
+				// Define and Render X Axis (Time Values)
+				var xAxis = new Rickshaw.Graph.Axis.Time( {
+					graph: graph,
+					ticksTreatment: ticksTreatment
+				});
+				xAxis.render();
 
-		// Define and Render Y Axis (Datastream Values)
-		var yAxis = new Rickshaw.Graph.Axis.Y( {
-			graph: graph,
-			tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-			ticksTreatment: ticksTreatment
-		});
-		yAxis.render();
+				// Define and Render Y Axis (Datastream Values)
+				var yAxis = new Rickshaw.Graph.Axis.Y( {
+					graph: graph,
+					tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+					ticksTreatment: ticksTreatment
+				});
+				yAxis.render();
 
-		// Enable Datapoint Hover Values
-		var hoverDetail = new Rickshaw.Graph.HoverDetail({
-			graph: graph,
-			formatter: function(series, x, y) {
-				var swatch = '<span class="detail_swatch" style="background-color: ' + series.color + '"></span>';
-				var content = swatch + series.name + ": " + parseInt(y) + '<br>' ;
-				return content;
+				// Enable Datapoint Hover Values
+				var hoverDetail = new Rickshaw.Graph.HoverDetail({
+					graph: graph,
+					formatter: function(series, x, y) {
+						var swatch = '<span class="detail_swatch" style="background-color: ' + series.color + '"></span>';
+						var content = swatch + series.name + ": " + parseInt(y) + '<br>' ;
+						return content;
 			}
 		});
 		
@@ -196,9 +211,7 @@
 				//$('.datastreams' ).empty();
 				//$('.datastreams' ).remove();
 
-				// Fill Datastream UI with Data
-				$('#feed .datastreams .datastream-name').html('my feed');
-				$('#feed .datastreams .datastream-value').html('values');
+
 				});
 				createGraph();
 
@@ -215,10 +228,6 @@
 
 		xively.feed.history(id, {  duration: "6hours", interval: 30 }, function (data) {
 			if(data.id == id) {
-				// ID
-				$('#feed .title .value').html(data.title);
-
-
 
 				// Date Updated
 				$('#feed .updated .value').html(data.updated);
