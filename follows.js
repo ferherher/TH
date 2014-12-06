@@ -92,12 +92,62 @@
 
 				graph.render();
 				
+				
+				var legend = document.querySelector('#legend');
+
+				var Hover = Rickshaw.Class.create(Rickshaw.Graph.HoverDetail, {
+
+					render: function(args) {
+
+						legend.innerHTML = args.formattedXValue;
+
+						args.detail.sort(function(a, b) { return a.order - b.order }).forEach( function(d) {
+
+							var line = document.createElement('div');
+							line.className = 'line';
+
+							var swatch = document.createElement('div');
+							swatch.className = 'swatch';
+							swatch.style.backgroundColor = d.series.color;
+
+							var label = document.createElement('div');
+							label.className = 'label';
+							label.innerHTML = d.name + ": " + d.formattedYValue;
+
+							line.appendChild(swatch);
+							line.appendChild(label);
+
+							legend.appendChild(line);
+
+							var dot = document.createElement('div');
+							dot.className = 'dot';
+							dot.style.top = graph.y(d.value.y0 + d.value.y) + 'px';
+							dot.style.borderColor = d.series.color;
+
+							this.element.appendChild(dot);
+
+							dot.className = 'dot active';
+
+							this.show();
+
+						}, this );
+						}
+				});
+				
+				var hover = new Hover( { graph: graph } ); 
+				/*
+				
+				
+				
+				
+				
+				
 				var legend = new Rickshaw.Graph.Legend( {
 					graph: graph,
 					element: document.getElementById('legend')
 
 				} );
-
+				
 				var shelving = new Rickshaw.Graph.Behavior.Series.Toggle( {
 					graph: graph,
 					legend: legend
@@ -112,7 +162,7 @@
 					graph: graph,
 					legend: legend
 				} );
-				
+				*/
 				var ticksTreatment = 'inverse';
 
 				// Define and Render X Axis (Time Values)
@@ -131,20 +181,24 @@
 				yAxis.render();
 
 				// Enable Datapoint Hover Values
+				/*
 				var hoverDetail = new Rickshaw.Graph.HoverDetail({
 					graph: graph,
 					formatter: function(series, x, y) {
 						var swatch = '<span class="detail_swatch" style="background-color: ' + series.color + '"></span>';
 						var content = swatch + series.name + ": " + parseInt(y) + '<br>' ;
 						return content;
-			}
-		});
-		
-		$('#feed .datastreams.datastreams .slider').prop('id', 'slider');
-		var slider = new Rickshaw.Graph.RangeSlider({
-			graph: graph,
-			element: $('#slider')
-		});
+					}
+					
+					
+				});
+				*/
+				$('#feed .datastreams.datastreams .slider').prop('id', 'slider');
+				var slider = new Rickshaw.Graph.RangeSlider({
+					graph: graph,
+					element: $('#slider')
+				});
+				
 				clearInterval(interval);
 			}
 		}, 500);
