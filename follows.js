@@ -7,6 +7,12 @@
 		dataInterval	= 60;// Default interval for data to be displayed (in seconds)
 // Function Declarations
 
+var w = window,
+    d = document,
+    e = d.documentElement,
+    g = d.getElementsByTagName('body')[0],
+    x = w.innerWidth || e.clientWidth || g.clientWidth,
+    y = w.innerHeight|| e.clientHeight|| g.clientHeight;
 
 	// Graph Annotations
 	function addAnnotation(force) {
@@ -78,8 +84,8 @@
 				// Build Graph
 				var graph = new Rickshaw.Graph( {
 					element: document.querySelector('#graph'),
-					width: 700,
-					height: 400,
+					width: x,
+					height: y,
 					renderer: 'line',
 					interpolation: 'linear',
 					min: minVal,
