@@ -13,10 +13,10 @@ var w = window,
     g = d.getElementsByTagName('body')[0],
     x = w.innerWidth || e.clientWidth || g.clientWidth,
     y = w.innerHeight|| e.clientHeight|| g.clientHeight,
-	buttonWidth =   Math.floor(x/5).toString() + "px"  ;
+	buttonWidth =   Math.floor(x/5 -1).toString() + "px"  ;
 	
-	document.getElementById("Content").style.width = x;
-	document.getElementById("Content").style.height = y;
+	document.getElementById("main").style.width = x.toString() + "px" ;
+	document.getElementById("main").style.height = y.toString() + "px" ;
 	document.getElementById("myButtonDay").style.width = buttonWidth;
 	document.getElementById("myButton2Day").style.width = buttonWidth;
 	document.getElementById("myButtonWeek").style.width = buttonWidth;
@@ -68,37 +68,44 @@ var w = window,
 
 		var interval = setInterval(function(){
 			if(mySeries.length == TH_datastreams.length) {
-				var allTemps = []
-
-				mySeries.forEach(function(thisSeries) {
-					myData = thisSeries.data
-					myData.forEach(function(thisData) {
-						allTemps.push(thisData.y);
-					});
-				});
-				var minVal  = Math.min.apply(Math, allTemps)
-				var maxVal = Math.max.apply(Math, allTemps)
-				// Fill Datastream UI with Data
-				$('#feed .datastreams .datastream-value').html('min: ' + minVal + ' | max: ' + maxVal);
-				console.log(minVal)
-				console.log(maxVal)
+								
 				// Initialize Graph DOM Element
-				$('#feed .datastreams .graph').empty();
-				$('#feed .datastreams .graph').attr('id', 'graph');
-				$('#feed .datastreams .legend').empty();
-				$('#feed .datastreams .legend').attr('id', 'legend');
-				$('#feed .datastreams .legendSwitch').empty();
-				$('#feed .datastreams .legendSwitch').attr('id', 'legendSwitch');
+				$('#content .graph-group .graph').empty();
+				$('#content .graph-group .legend').empty();
+				$('#content .graph-group .legendSwitch').empty();
+				$('#content .valuesNow').empty();
+				$('#content .valuesAve').empty();
+				
+				var allTemps = [];
+				mySeries.forEach(function(thisSeries) {
+					var thisTemp = [];
+					thisSeries.data.forEach(function(thisData) {
+						allTemps.push(thisData.y);
+						thisTemp.push(thisData.y);
+					});
+					var minVal  = Math.min.apply(Math, thisTemp);
+					var maxVal = Math.max.apply(Math, thisTemp);
+					var lastValue = thisTemp[thisTemp.length - 1];
+					console.log(lastValue);
+					var valueAve =  '<li><span style=\"color: ' + thisSeries.color + '; \">' + thisSeries.name.substring(0,2) +': </span>'  + minVal  + ' | '  + maxVal + '</li>';
+					
+					var valueNow =  '<li><span style=\"color: ' + thisSeries.color + '; \">' + thisSeries.name.substring(0,2) +': </span>'  + lastValue  + '</li>';
+					
+					$('#content .valuesNow').append(valueNow);
+					$('#content .valuesAve').append(valueAve);
+				});
+				
+				var minVal  = Math.min.apply(Math, allTemps);
 				
 				
 				// Build Graph
 				var graph = new Rickshaw.Graph( {
 					element: document.querySelector('#graph'),
-					width: x-60,
-					height: y -310,
+					width: x*0.9,
+					height: y-250,
 					renderer: 'line',
 					interpolation: 'linear',
-					min: minVal,
+					min: minVal - 1,
 					padding: {
 						top: 0.02,
 						right: 0.02,
@@ -117,11 +124,14 @@ var w = window,
 				var Hover = Rickshaw.Class.create(Rickshaw.Graph.HoverDetail, {
 
 					render: function(args) {
+						$('#content .graph-group .legend').empty();
 
-						legend.innerHTML = args.formattedXValue;
+						var legendDate = document.createElement('div');
+						legendDate.className = 'legendDate';
+						legendDate.innerHTML = args.formattedXValue.substring(4,29) ;
+						legend.appendChild(legendDate);
 
 						args.detail.sort(function(a, b) { return a.order - b.order }).forEach( function(d) {
-
 							var line = document.createElement('div');
 							line.className = 'line';
 
@@ -131,7 +141,7 @@ var w = window,
 
 							var label = document.createElement('div');
 							label.className = 'label';
-							label.innerHTML = d.name + ": " + d.formattedYValue;
+							label.innerHTML = d.name.substring(0,2)  + ": " + d.formattedYValue;
 
 							line.appendChild(swatch);
 							line.appendChild(label);
@@ -150,6 +160,8 @@ var w = window,
 							this.show();
 
 						}, this );
+						
+
 						}
 						
 						
@@ -174,15 +186,8 @@ var w = window,
 					legend: legendSwitch
 				} );
 
-				var order = new Rickshaw.Graph.Behavior.Series.Order( {
-					graph: graph,
-					legend: legendSwitch
-				} );
 
-				var highlight = new Rickshaw.Graph.Behavior.Series.Highlight( {
-					graph: graph,
-					legend: legendSwitch
-				} );
+
 				
 				var ticksTreatment = 'inverse';
 
@@ -202,7 +207,7 @@ var w = window,
 				yAxis.render();
 
 				// Enable Datapoint Hover Values
-				
+				/*
 				var hoverDetail = new Rickshaw.Graph.HoverDetail({
 					graph: graph,
 					formatter: function(series, x, y) {
@@ -210,11 +215,9 @@ var w = window,
 						var content = swatch + series.name + ": " + parseInt(y) + '<br>' ;
 						return content;
 					}
-					
-					
 				});
-				
-				$('#feed .datastreams.datastreams .slider').prop('id', 'slider');
+					*/
+
 				var slider = new Rickshaw.Graph.RangeSlider({
 					graph: graph,
 					element: $('#slider')
@@ -261,9 +264,9 @@ var w = window,
 								}
 								var mycolor = 'steelblue'
 								var myrenderer = 'line'
-								if(datastream.id ==  'Exterior') {mycolor = "#c05020"; myrenderer = 'line'}
-								if(datastream.id ==  'Temperature') {mycolor = "#30c020"; myrenderer = 'line'}
-								if(datastream.id ==  'Calorifier') {mycolor = 'steelblue'; myrenderer = 'line'}
+								if(datastream.id ==  'Exterior') {mycolor = '#6bd2db'; myrenderer = 'line'}
+								if(datastream.id ==  'Temperature') {mycolor = '#ffbe4f'; myrenderer = 'line'}
+								if(datastream.id ==  'Calorifier') {mycolor = '#e8702a'; myrenderer = 'line'}
 								
 								// Add Datapoints Array to Graph Series Array
 								mySeries.push({
@@ -276,7 +279,7 @@ var w = window,
 							});
 
 						} else {
-								$('#feed .datastreams.datastreams .graphWrapper').html('<div class="alert alert-box no-info">Sorry, this datastream does not have any associated data.</div>');
+								$('#content .datastreams.datastreams .graphWrapper').html('<div class="alert alert-box no-info">Sorry, this datastream does not have any associated data.</div>');
 						}
 
 					} else {
@@ -302,38 +305,32 @@ var w = window,
 
 
 		xively.feed.history(id, {  duration: "6hours", interval: 30 }, function (data) {
-			if(data.id == id) {
-
-				// Date Updated
-				$('#feed .updated .value').html(data.updated);
-
-
-				$('#feed .duration-day').click(function() {
+				$('#content .duration-day').click(function() {
 					mySeries = []
 					updateFeeds(data.id, TH_datastreams, '1day', 60);
 					return false;
 				});
 				
-				$('#feed .duration-2days').click(function() {
+				$('#content .duration-2days').click(function() {
 					mySeries = []
 
 					updateFeeds(data.id, TH_datastreams, '2days', 120);
 					return false;
 				});
 				
-				$('#feed .duration-week').click(function() {
+				$('#content .duration-week').click(function() {
 					mySeries = []
 					updateFeeds(data.id, TH_datastreams, '1week', 900);
 					return false;
 				});
 
-				$('#feed .duration-month').click(function() {
+				$('#content .duration-month').click(function() {
 					mySeries = []
 					updateFeeds(data.id, TH_datastreams, '1month', 1800);
 					return false;
 				});
 
-				$('#feed .duration-90').click(function() {
+				$('#content .duration-90').click(function() {
 					mySeries = []
 					updateFeeds(data.id, TH_datastreams, '90days', 10800);
 					return false;
@@ -346,12 +343,6 @@ var w = window,
 				} else {
 					updateFeeds(data.id, TH_datastreams, '1day', 60);
 				}
-
-			} else {
-				// Duplicate Example to Build Feed UI
-				$('#exampleFeedNotFound').clone().appendTo('#feeds').attr('id', 'feed-' + id).removeClass('hidden');
-				$('#feed-' + id + ' h2').html(id);
-			}
 		});
 
 	}

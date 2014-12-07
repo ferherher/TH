@@ -13,28 +13,55 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width" />
 	<title>My Feed</title>
-
-	<link type="text/css" rel="stylesheet" href="css/foundation.min.css" />
 	<link type="text/css" rel="stylesheet" href="css/rickshaw.min.css">
 	
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" type="text/css" media="all" />
 
 	<style type="text/css">
 		body, html {
-		<!--
-			max-width: 100%;
-			min-height: 100%;
-			<!--overflow-x: hidden;-->
+			margin: 0px;
 			background: #20292f;
-		}
-		.hidden {
-			display: none;
-		}
-		#Content {
-			background: #36454F;
-
+			font-size: 15px;
+			text-align: center;
 		}
 		
+		#main {
+			font-family: Arial;
+			background: #36454F;
+			position: relative; 
+			background: #36454F; 
+			color: #9aa2a7;
+		}
+
+		.button-group {
+			background: #2b373f;  
+			height: 30px; 
+			line-height:30px; 
+			padding-top: 5px; 
+			padding-bottom: 5px;
+			
+		}
+
+		.button{
+			background-color: #d6d9db;
+			float: left;
+			font-family: inherit;
+			font-weight: bold;
+			text-decoration: none;
+			border-style: solid;
+			border-width: 1px;
+			border-color: #727c83;
+			color: #36454f;
+			font-size: 0.8125em;
+			margin: 0 0 0 -1px;
+			box-shadow: 1px 1px 0 rgba(255,255,255,0.5) inset;
+		}
+
+		li {
+			display: inline;
+			list-style-type: none;
+			padding-right: 5px;
+		}
 
 		.swatch {
 			display: inline-block;
@@ -42,115 +69,76 @@
 			height: 10px;
 			margin: 0 8px 0 0;
 		}
+
 		.label {
 			display: inline-block;
 		}
+
 		.line {
+			padding-left: 5px;
 			display: inline-block;
-			margin: 0 0 0 30px;
 		}
-		#legend {
-			text-align: center;
+
 		}
 		.rickshaw_graph .detail {
 			background: none;
 		}
-	</style>
 
+		.values {
+			background: #2b373f; 
+		}
+
+		.legend {
+			padding-top: 5px;
+			height:50px;
+		}
+		
+		.center {
+			margin-left: auto;
+			margin-right: auto;
+			width: 90%;
+		}
+		
+		.ui-slider-range {
+		background: #9aa2a7;
+		}
+		
+		
+		
+	</style>
+	
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-	<script src="js/custom.modernizr.js"></script>
 	<script src="js/xivelyjs-1.0.0.min.js"></script>
 	<script src="js/d3.v2.js"></script>
 	<script src="js/rickshaw.min.js"></script>
-
-
+	
 </head>
+
 <body>
-
-	<!-- Header 
-	<div style="background: #2b373f;">
-		<div class="row">
-			<div class="large-12 columns">
-				<h1 style="color: #727c83; text-shadow: 0px 1px 0px #000;">
-					TH
-				</h1>
+	<div id="main" >
+		<div class="content" id="content" >
+			<div class="button-group" >
+				<a href="#" id="myButtonDay" class=" button  duration-day">Day</a>
+				<a href="#" id="myButton2Day" class=" button  duration-2days">2 Days</a>
+				<a href="#" id="myButtonWeek" class=" button  duration-week">Week</a>
+				<a href="#" id="myButtonMonth" class=" button  duration-month">Month</a>
+				<a href="#" id="myButton90Days" class=" button  duration-90">90 Days</a>
 			</div>
+			<div class="valuesNow values"  id="valuesNow"></div>
+			<div class="graph-group">
+				<div class="legend"  id="legend"></div>
+				<div class="graph center" id="graph" ></div>
+				<div class="slider center" id="slider" ></div>
+				<div class="legendSwitch" id="legendSwitch"></div>
+			</div>
+			<div class="valuesAve values"  id="valuesAve"></div>
 		</div>
 	</div>
-	-->
-	<!-- Page Content -->
-	<div id="Content" style="position: relative; background: #36454F; color:#aeb4b8;">
-
-			<div class="feed" id="feed" style="line-height: 25px;">
-				<div class="row updated" style=" background: #2b373f;  padding-top: 15px; padding-bottom: 15px;">
-					<div class="large-1 columns" style="font-size: 12px;"><strong>Updated: </strong></div>
-					<div class="large-3 columns value" style="font-size: 12px;"></div>
-				</div>
-						<div class=" button-group" style="background: #2b373f; float: right;">
-							<a href="#" id="myButtonDay" class="small button secondary duration-day">Day</a>
-							<a href="#" id="myButton2Day" class="small button secondary duration-2days">2 Days</a>
-							<a href="#" id="myButtonWeek" class="small button secondary duration-week">Week</a>
-							<a href="#" id="myButtonMonth" class="small button secondary duration-month">Month</a>
-							<a href="#" id="myButton90Days" class="small button secondary duration-90">90 Days</a>
-						</div>
-
-				<div class="row">
-
-						<div class="datastreams" style="padding-bottom: 15px; ">
 
 
-								<div class="row">
-									<div class="large-5 columns datastream-value subheader" style="font-size: 24px; text-align: right;">
-										Values
-									</div>
-								</div>
-								<div class="row" style="padding-left: 5px; padding-bottom: 15px; ">
-									<div class="large-12 columns">
 
-										<div class="graph" >
-										</div>
-
-										<div class="slider" >
-										</div>
-
-									</div>
-									
-								</div>
-								
-										<div id="legend_container" style=" background: #2b373f;  padding-top: 15px; padding-bottom: 15px;">
-											<div id="smoother" title="Smoothing"></div>
-											<div class="legend"></div>
-											<div class="legendSwitch"></div>
-										</div>
-						</div>
-
-
-				</div>
-			</div>
-
-	</div>
-
-	<!-- Footer 
-	<div style="background: #0D1B23;">
-		<div style="padding: 15px;">
-			<div class="row">
-				<div class="large-8 columns" style="color: rgb(81, 98, 111); padding-top: 10px; padding-bottom: 10px;">
-					<small>
-						WIP
-					</small>
-				</div>
-			</div>
-		</div>
-	</div>
-	-->
-	<!-- Modals -->
-	<div id="loadingData" class="reveal-modal small text-center">
-		<br/><br/><h2 class="subheader">Loading...</h2><br/><br/>
-	</div>
-
-
-	<script src="follows.js"></script>
+<script src="follows.js"></script>
 
 </body>
 </html>
