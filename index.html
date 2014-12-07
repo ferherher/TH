@@ -21,6 +21,7 @@
 
 	<style type="text/css">
 		body, html {
+		<!--
 			max-width: 100%;
 			min-height: 100%;
 			<!--overflow-x: hidden;-->
@@ -85,15 +86,15 @@
 				<div class="row updated" style=" background: #2b373f;  padding-top: 15px; padding-bottom: 15px;">
 					<div class="large-1 columns" style="font-size: 12px;"><strong>Updated: </strong></div>
 					<div class="large-3 columns value" style="font-size: 12px;"></div>
-
-						<div class="large-6 columns button-group" style="float: right;">
-							<a href="#" class="small button secondary duration-day">Day</a>
-							<a href="#" class="small button secondary duration-2days">2 Days</a>
-							<a href="#" class="small button secondary duration-week">Week</a>
-							<a href="#" class="small button secondary duration-month">Month</a>
-							<a href="#" class="small button secondary duration-90">90 Days</a>
-						</div>
 				</div>
+						<div class=" button-group" style="background: #2b373f; float: right;">
+							<a href="#" id="myButtonDay" class="small button secondary duration-day">Day</a>
+							<a href="#" id="myButton2Day" class="small button secondary duration-2days">2 Days</a>
+							<a href="#" id="myButtonWeek" class="small button secondary duration-week">Week</a>
+							<a href="#" id="myButtonMonth" class="small button secondary duration-month">Month</a>
+							<a href="#" id="myButton90Days" class="small button secondary duration-90">90 Days</a>
+						</div>
+
 				<div class="row">
 
 						<div class="datastreams" style="padding-bottom: 15px; ">
@@ -104,7 +105,7 @@
 										Values
 									</div>
 								</div>
-								<div class="row" style="padding-left: 20px; padding-bottom: 15px; ">
+								<div class="row" style="padding-left: 5px; padding-bottom: 15px; ">
 									<div class="large-12 columns">
 
 										<div class="graph" >

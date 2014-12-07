@@ -12,8 +12,18 @@ var w = window,
     e = d.documentElement,
     g = d.getElementsByTagName('body')[0],
     x = w.innerWidth || e.clientWidth || g.clientWidth,
-    y = w.innerHeight|| e.clientHeight|| g.clientHeight;
-
+    y = w.innerHeight|| e.clientHeight|| g.clientHeight,
+	buttonWidth =   Math.floor(x/5).toString() + "px"  ;
+	
+	document.getElementById("Content").style.width = x;
+	document.getElementById("Content").style.height = y;
+	document.getElementById("myButtonDay").style.width = buttonWidth;
+	document.getElementById("myButton2Day").style.width = buttonWidth;
+	document.getElementById("myButtonWeek").style.width = buttonWidth;
+	document.getElementById("myButtonMonth").style.width = buttonWidth;
+	document.getElementById("myButton90Days").style.width = buttonWidth;
+	
+	
 	// Graph Annotations
 	function addAnnotation(force) {
 		if (messages.length > 0 && (force || Math.random() >= 0.95)) {
@@ -84,8 +94,8 @@ var w = window,
 				// Build Graph
 				var graph = new Rickshaw.Graph( {
 					element: document.querySelector('#graph'),
-					width: x-100,
-					height: y -300,
+					width: x-60,
+					height: y -310,
 					renderer: 'line',
 					interpolation: 'linear',
 					min: minVal,
