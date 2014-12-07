@@ -84,8 +84,8 @@ var w = window,
 				// Build Graph
 				var graph = new Rickshaw.Graph( {
 					element: document.querySelector('#graph'),
-					width: x,
-					height: y,
+					width: x-100,
+					height: y -300,
 					renderer: 'line',
 					interpolation: 'linear',
 					min: minVal,
