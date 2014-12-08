@@ -3,8 +3,8 @@
 	var key		= 'vTij3orvHd4oT7dl31HQXaNFap85row4X9CbqD79tSEV8e7b', // Unique master Xively API key to be used as a default
 		TH_feed	= '2029082394', // Comma separated array of Xively Feed ID numbers
 		TH_datastreams	= ['Exterior','Temperature','Calorifier'],
-		dataDuration	= '1day', // Default duration of data to be displayed // ref: https://xively.com/dev/docs/api/data/read/historical_data/
-		dataInterval	= 60;// Default interval for data to be displayed (in seconds)
+		dataDuration	= '2days', // Default duration of data to be displayed // ref: https://xively.com/dev/docs/api/data/read/historical_data/
+		dataInterval	= 900;// Default interval for data to be displayed (in seconds)
 // Function Declarations
 
 var w = window,
@@ -22,8 +22,7 @@ var w = window,
 	document.getElementById("myButtonWeek").style.width = buttonWidth;
 	document.getElementById("myButtonMonth").style.width = buttonWidth;
 	document.getElementById("myButton90Days").style.width = buttonWidth;
-	
-	
+
 	// Graph Annotations
 	function addAnnotation(force) {
 		if (messages.length > 0 && (force || Math.random() >= 0.95)) {
@@ -60,15 +59,12 @@ var w = window,
 	function setApiKey(key) {
 		xively.setKey(key);
 	}
-	
-	window.mySeries = new Array();
 
-	
+	mySeries = new Array();
+
 	function createGraph() {
-
 		var interval = setInterval(function(){
 			if(mySeries.length == TH_datastreams.length) {
-								
 				// Initialize Graph DOM Element
 				$('#content .graph-group .graph').empty();
 				$('#content .graph-group .legend').empty();
@@ -77,26 +73,28 @@ var w = window,
 				$('#content .valuesAve').empty();
 				
 				var allTemps = [];
-				mySeries.forEach(function(thisSeries) {
-					var thisTemp = [];
-					thisSeries.data.forEach(function(thisData) {
-						allTemps.push(thisData.y);
-						thisTemp.push(thisData.y);
+				TH_datastreams.forEach(function(datastreamName){
+					mySeries.forEach(function(thisSeries) {
+						if (thisSeries.name == datastreamName){
+							var thisTemp = [];
+							thisSeries.data.forEach(function(thisData) {
+								allTemps.push(thisData.y);
+								thisTemp.push(thisData.y);
+							});
+							var minVal  = Math.min.apply(Math, thisTemp);
+							var maxVal = Math.max.apply(Math, thisTemp);
+							var lastValue = thisTemp[thisTemp.length - 1];
+							
+							var valueAve =  '<li><span style=\"color: ' + thisSeries.color + ';padding-right: 2px; \">' + thisSeries.name.substring(0,2) +':</span>' + lastValue + '<span style=\"font-size: 0.7em;\"> ( ' + minVal  + ' | '  + maxVal + ')</span></li>';
+							//var valueNow =  '<li><span style=\"color: ' + thisSeries.color + '; \">' + thisSeries.name.substring(0,2) +': </span>'  + lastValue  + '</li>';
+							
+							$('#content .valuesNow').append(valueAve);
+							//$('#content .valuesAve').append(valueAve);
+						};
 					});
-					var minVal  = Math.min.apply(Math, thisTemp);
-					var maxVal = Math.max.apply(Math, thisTemp);
-					var lastValue = thisTemp[thisTemp.length - 1];
-					console.log(lastValue);
-					var valueAve =  '<li><span style=\"color: ' + thisSeries.color + '; \">' + thisSeries.name.substring(0,2) +': </span>'  + minVal  + ' | '  + maxVal + '</li>';
-					
-					var valueNow =  '<li><span style=\"color: ' + thisSeries.color + '; \">' + thisSeries.name.substring(0,2) +': </span>'  + lastValue  + '</li>';
-					
-					$('#content .valuesNow').append(valueNow);
-					$('#content .valuesAve').append(valueAve);
 				});
 				
 				var minVal  = Math.min.apply(Math, allTemps);
-				
 				
 				// Build Graph
 				var graph = new Rickshaw.Graph( {
@@ -113,24 +111,20 @@ var w = window,
 						left: 0.02
 						},
 					series: mySeries
-
-
 				});
-
+				
 				graph.render();
 				
 				var legend = document.querySelector('#legend');
-
 				var Hover = Rickshaw.Class.create(Rickshaw.Graph.HoverDetail, {
-
 					render: function(args) {
 						$('#content .graph-group .legend').empty();
-
+						
 						var legendDate = document.createElement('div');
 						legendDate.className = 'legendDate';
 						legendDate.innerHTML = args.formattedXValue.substring(4,29) ;
 						legend.appendChild(legendDate);
-
+						
 						args.detail.sort(function(a, b) { return a.order - b.order }).forEach( function(d) {
 							var line = document.createElement('div');
 							line.className = 'line';
@@ -160,25 +154,14 @@ var w = window,
 							this.show();
 
 						}, this );
-						
-
 						}
-						
-						
 				});
-				
+
 				var hover = new Hover( { graph: graph } ); 
-				
-				
-				
-				
-				
-				
-				
+
 				var legendSwitch = new Rickshaw.Graph.Legend( {
 					graph: graph,
 					element: document.getElementById('legendSwitch')
-
 				} );
 				
 				var shelving = new Rickshaw.Graph.Behavior.Series.Toggle( {
@@ -186,9 +169,6 @@ var w = window,
 					legend: legendSwitch
 				} );
 
-
-
-				
 				var ticksTreatment = 'inverse';
 
 				// Define and Render X Axis (Time Values)
@@ -196,6 +176,7 @@ var w = window,
 					graph: graph,
 					ticksTreatment: ticksTreatment
 				});
+				
 				xAxis.render();
 
 				// Define and Render Y Axis (Datastream Values)
@@ -204,6 +185,7 @@ var w = window,
 					tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
 					ticksTreatment: ticksTreatment
 				});
+				
 				yAxis.render();
 
 				// Enable Datapoint Hover Values
@@ -217,7 +199,7 @@ var w = window,
 					}
 				});
 					*/
-
+					
 				var slider = new Rickshaw.Graph.RangeSlider({
 					graph: graph,
 					element: $('#slider')
@@ -275,85 +257,68 @@ var w = window,
 										color: mycolor,
 										renderer : myrenderer,
 								});
-								
 							});
-
 						} else {
 								$('#content .datastreams.datastreams .graphWrapper').html('<div class="alert alert-box no-info">Sorry, this datastream does not have any associated data.</div>');
 						}
-
 					} else {
 								console.log('Datastream not requested! (' + datastream.id + ')');
 					}
 				// Create Datastream UI
 				//$('.datastreams' ).empty();
 				//$('.datastreams' ).remove();
-
-
 				});
 				createGraph();
-
 			}
-
-
 		});
-
 	}
 
 	function setFeeds(TH_feed, TH_datastreams) {
 		id = TH_feed;
+		xively.feed.history(id, {  duration: "2days", interval: 900 }, function (data) {
+			$('#content .duration-day').click(function() {
+				mySeries = []
+				updateFeeds(data.id, TH_datastreams, '1day', 900);
+				return false;
+			});
+			
+			$('#content .duration-2days').click(function() {
+				mySeries = []
 
+				updateFeeds(data.id, TH_datastreams, '2days', 900);
+				return false;
+			});
+			
+			$('#content .duration-week').click(function() {
+				mySeries = []
+				updateFeeds(data.id, TH_datastreams, '1week', 900);
+				return false;
+			});
 
-		xively.feed.history(id, {  duration: "6hours", interval: 30 }, function (data) {
-				$('#content .duration-day').click(function() {
-					mySeries = []
-					updateFeeds(data.id, TH_datastreams, '1day', 60);
-					return false;
-				});
-				
-				$('#content .duration-2days').click(function() {
-					mySeries = []
+			$('#content .duration-month').click(function() {
+				mySeries = []
+				updateFeeds(data.id, TH_datastreams, '1month', 2400);
+				return false;
+			});
 
-					updateFeeds(data.id, TH_datastreams, '2days', 120);
-					return false;
-				});
-				
-				$('#content .duration-week').click(function() {
-					mySeries = []
-					updateFeeds(data.id, TH_datastreams, '1week', 900);
-					return false;
-				});
+			$('#content .duration-90').click(function() {
+				mySeries = []
+				updateFeeds(data.id, TH_datastreams, '90days', 9600);
+				return false;
+			});
 
-				$('#content .duration-month').click(function() {
-					mySeries = []
-					updateFeeds(data.id, TH_datastreams, '1month', 1800);
-					return false;
-				});
+			// Handle Datastreams
+			if(dataDuration != '' && dataInterval != 0) {
+				updateFeeds(data.id, TH_datastreams, dataDuration, dataInterval);
 
-				$('#content .duration-90').click(function() {
-					mySeries = []
-					updateFeeds(data.id, TH_datastreams, '90days', 10800);
-					return false;
-				});
-
-				// Handle Datastreams
-				if(dataDuration != '' && dataInterval != 0) {
-					updateFeeds(data.id, TH_datastreams, dataDuration, dataInterval);
-
-				} else {
-					updateFeeds(data.id, TH_datastreams, '1day', 60);
-				}
+			} else {
+				updateFeeds(data.id, TH_datastreams, '1day', 900);
+			}
 		});
-
 	}
 // END Function Declarations
 
 // BEGIN Initialization
-
-	var today = new Date();
-	var yesterday = new Date(today.getTime()-1000*60*60*24*1);
-	var lastWeek = new Date(today.getTime()-1000*60*60*24*7);
-
 
 	setApiKey(key);
 	setFeeds(TH_feed,TH_datastreams);
