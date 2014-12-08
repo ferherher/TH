@@ -12,17 +12,19 @@
 
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width" />
-	<title>My Feed</title>
+	<title>TH</title>
 	<link type="text/css" rel="stylesheet" href="css/rickshaw.min.css">
 	
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" type="text/css" media="all" />
 
 	<style type="text/css">
 		body, html {
+			overflow-x: hidden;
 			margin: 0px;
 			background: #20292f;
-			font-size: 15px;
+			font-size: 14px;
 			text-align: center;
+			
 		}
 		
 		#main {
@@ -86,6 +88,7 @@
 
 		.values {
 			background: #2b373f; 
+			height: 20px;
 		}
 
 		.legend {
@@ -119,11 +122,11 @@
 	<div id="main" >
 		<div class="content" id="content" >
 			<div class="button-group" >
-				<a href="#" id="myButtonDay" class=" button  duration-day">Day</a>
-				<a href="#" id="myButton2Day" class=" button  duration-2days">2 Days</a>
-				<a href="#" id="myButtonWeek" class=" button  duration-week">Week</a>
-				<a href="#" id="myButtonMonth" class=" button  duration-month">Month</a>
-				<a href="#" id="myButton90Days" class=" button  duration-90">90 Days</a>
+				<a href="#" id="myButtonDay" class=" button buttonWidth duration-day">Day</a>
+				<a href="#" id="myButton2Day" class=" button buttonWidth duration-2days">2 Days</a>
+				<a href="#" id="myButtonWeek" class=" button buttonWidth duration-week">Week</a>
+				<a href="#" id="myButtonMonth" class=" button buttonWidth duration-month">Month</a>
+				<a href="#" id="myButton90Days" class=" button buttonWidth duration-90">90 Days</a>
 			</div>
 			<div class="valuesNow values"  id="valuesNow"></div>
 			<div class="graph-group">
