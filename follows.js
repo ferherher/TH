@@ -251,7 +251,7 @@ var w = window,
 								if(datastream.id ==  'Bathroom') {mycolor = '#CF423C'; myrenderer = 'line'}
 								if(datastream.id ==  'WaterTank') {mycolor = '#7A1631'; myrenderer = 'line'}
 								
-								if(datastream.id ==  'Exterior') {mycolor = '#1760FF'; myrenderer = 'line'}
+								if(datastream.id ==  'Exterior') {mycolor = '#31797D'; myrenderer = 'line'}
 								
 								if(datastream.id ==  'Calorifier') {mycolor = '#FFFA7A'; myrenderer = 'line'}
 								if(datastream.id ==  'Engine') {mycolor = '#8CB202'; myrenderer = 'line'}
