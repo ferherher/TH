@@ -2,7 +2,7 @@
 
 	var key		= 'vTij3orvHd4oT7dl31HQXaNFap85row4X9CbqD79tSEV8e7b', // Unique master Xively API key to be used as a default
 		TH_feed	= '2029082394', // Comma separated array of Xively Feed ID numbers
-		TH_datastreams	= ['Exterior','Saloon','Bathroom','WaterTank','BackCabin','Engine'], //
+		TH_datastreams	= ['Exterior','Saloon','BackCabin','Bathroom','WaterTank','Engine'], //
 		dataDuration	= '2days', // Default duration of data to be displayed // ref: https://xively.com/dev/docs/api/data/read/historical_data/
 		dataInterval	= 900;// Default interval for data to be displayed (in seconds)
 // Function Declarations
@@ -249,16 +249,16 @@ var w = window,
 								if(datastream.id ==  'Saloon') {mycolor = '#FFD462'; myrenderer = 'line'}
 								if(datastream.id ==  'BackCabin') {mycolor = '#FC7D49'; myrenderer = 'line'}
 								if(datastream.id ==  'Bathroom') {mycolor = '#CF423C'; myrenderer = 'line'}
-								if(datastream.id ==  'WaterTank') {mycolor = '#7A1631'; myrenderer = 'line'}
+								if(datastream.id ==  'WaterTank') {mycolor = '#BF244D'; myrenderer = 'line'}
 								
-								if(datastream.id ==  'Exterior') {mycolor = '#31797D'; myrenderer = 'line'}
+								if(datastream.id ==  'Exterior') {mycolor = '#24ADA0'; myrenderer = 'line'}
 								
 								if(datastream.id ==  'Calorifier') {mycolor = '#FFFA7A'; myrenderer = 'line'}
-								if(datastream.id ==  'Engine') {mycolor = '#8CB202'; myrenderer = 'line'}
+								if(datastream.id ==  'Engine') {mycolor = '#24AD69'; myrenderer = 'line'}
 								if(datastream.id ==  'Freezer') {mycolor = '#004C66'; myrenderer = 'line'}
 								if(datastream.id ==  'Fridge') {mycolor = '#1760FF'; myrenderer = 'line'}
 								if(datastream.id ==  'Temperature') {mycolor = '#3F0B1B'; myrenderer = 'line'}
-																
+								//B82A64					
 								
 								
 								// Add Datapoints Array to Graph Series Array
