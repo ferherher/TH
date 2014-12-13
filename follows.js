@@ -246,16 +246,19 @@ var w = window,
 								}
 								var mycolor = 'steelblue'
 								var myrenderer = 'line'
-								if(datastream.id ==  'Exterior') {mycolor = '#1760FF'; myrenderer = 'line'}
-								if(datastream.id ==  'Saloon') {mycolor = '#7A1631'; myrenderer = 'line'}
-								if(datastream.id ==  'Bathroom') {mycolor = '#CF423C'; myrenderer = 'line'}
+								if(datastream.id ==  'Saloon') {mycolor = '#FFD462'; myrenderer = 'line'}
 								if(datastream.id ==  'BackCabin') {mycolor = '#FC7D49'; myrenderer = 'line'}
-								if(datastream.id ==  'WaterTank') {mycolor = '#1760FF'; myrenderer = 'line'}
+								if(datastream.id ==  'Bathroom') {mycolor = '#CF423C'; myrenderer = 'line'}
+								if(datastream.id ==  'WaterTank') {mycolor = '#7A1631'; myrenderer = 'line'}
+								
+								if(datastream.id ==  'Exterior') {mycolor = '#1760FF'; myrenderer = 'line'}
+								
+								if(datastream.id ==  'Calorifier') {mycolor = '#FFFA7A'; myrenderer = 'line'}
 								if(datastream.id ==  'Engine') {mycolor = '#8CB202'; myrenderer = 'line'}
 								if(datastream.id ==  'Freezer') {mycolor = '#004C66'; myrenderer = 'line'}
 								if(datastream.id ==  'Fridge') {mycolor = '#1760FF'; myrenderer = 'line'}
 								if(datastream.id ==  'Temperature') {mycolor = '#3F0B1B'; myrenderer = 'line'}
-								if(datastream.id ==  'Calorifier') {mycolor = '#FFD462'; myrenderer = 'line'}								
+																
 								
 								
 								// Add Datapoints Array to Graph Series Array
