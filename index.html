@@ -23,10 +23,9 @@
 			margin: 0px;
 			background: #20292f;
 			font-size: 14px;
-			text-align: center;
-			
+			text-align: left;
 		}
-		
+
 		#main {
 			font-family: Arial;
 			background: #36454F;
@@ -40,13 +39,13 @@
 			height: 30px; 
 			line-height:30px; 
 			padding-top: 5px; 
-			padding-bottom: 5px;
 			
 		}
 
 		.button{
 			background-color: #d6d9db;
 			float: left;
+			text-align: center;
 			font-family: inherit;
 			font-weight: bold;
 			text-decoration: none;
@@ -59,10 +58,15 @@
 			box-shadow: 1px 1px 0 rgba(255,255,255,0.5) inset;
 		}
 
-		li {
-			display: inline;
+		li{
+			display: block; 
+			float: left;
 			list-style-type: none;
-			padding-right: 5px;
+		}
+
+		ul {
+			padding: 6px;
+			margin: 0px;
 		}
 
 		.swatch {
@@ -79,6 +83,7 @@
 		.line {
 			padding-left: 5px;
 			display: inline-block;
+			width: 31%;
 		}
 
 		}
@@ -88,26 +93,28 @@
 
 		.values {
 			background: #2b373f; 
-			height: 20px;
+		}
+
+		#valuesNow{
+		padding: 2%;
 		}
 
 		.legend {
-			padding-top: 5px;
+			padding:2%;
 			height:50px;
 		}
-		
+
 		.center {
 			margin-left: auto;
 			margin-right: auto;
 			width: 90%;
 		}
-		
+
 		.ui-slider-range {
 		background: #9aa2a7;
 		}
 		
-		
-		
+
 	</style>
 	
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>

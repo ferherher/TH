@@ -2,7 +2,7 @@
 
 	var key		= 'vTij3orvHd4oT7dl31HQXaNFap85row4X9CbqD79tSEV8e7b', // Unique master Xively API key to be used as a default
 		TH_feed	= '2029082394', // Comma separated array of Xively Feed ID numbers
-		TH_datastreams	= ['Exterior','Saloon','BackCabin','Bathroom','WaterTank','Engine'], //
+		TH_datastreams	= ['Bathroom','Saloon','BackCabin','Exterior','WaterTank','Engine'], //
 		dataDuration	= '2days', // Default duration of data to be displayed // ref: https://xively.com/dev/docs/api/data/read/historical_data/
 		dataInterval	= 900;// Default interval for data to be displayed (in seconds)
 // Function Declarations
@@ -22,6 +22,13 @@ var w = window,
 	document.getElementById("myButtonWeek").style.width = buttonWidth;
 	document.getElementById("myButtonMonth").style.width = buttonWidth;
 	document.getElementById("myButton90Days").style.width = buttonWidth;
+
+	// adding font size
+	var valuesNowElement = document.querySelector("#valuesNow");
+	var valuesFontSize = Math.floor(x/26);
+	var valuesFontHeight = valuesFontSize*2.2
+	valuesNowElement.style.fontSize =  valuesFontSize.toString() + "px" ;
+	valuesNowElement.style.height = valuesFontHeight.toString() + "px" ;
 
 	// Graph Annotations
 	function addAnnotation(force) {
@@ -70,9 +77,9 @@ var w = window,
 				$('#content .graph-group .legend').empty();
 				$('#content .graph-group .legendSwitch').empty();
 				$('#content .valuesNow').empty();
-				$('#content .valuesAve').empty();
-				
+				var valuesNow 
 				var allTemps = [];
+				
 				TH_datastreams.forEach(function(datastreamName){
 					mySeries.forEach(function(thisSeries) {
 						if (thisSeries.name == datastreamName){
@@ -84,15 +91,31 @@ var w = window,
 							var minVal  = Math.min.apply(Math, thisTemp);
 							var maxVal = Math.max.apply(Math, thisTemp);
 							var lastValue = thisTemp[thisTemp.length - 1];
+							var thisSeriesName =  thisSeries.name;
+							if (thisSeriesName == 'BackCabin'){thisSeriesName = 'Bc'}
+							else{thisSeriesName = thisSeriesName.substring(0,2) }
+							$('#content .valuesNow').append('<li id=\"valuesNowLi\" style=\"width: 33%;\"><span style=\"color: ' + thisSeries.color + ';padding-right: 2px; \">' + thisSeriesName +':</span>' + lastValue + '<span style=\"font-size: 0.8em;\"> (' + minVal  + ' | '  + maxVal + ')</span></li>');
 							
-							var valueAve =  '<li><span style=\"color: ' + thisSeries.color + ';padding-right: 2px; \">' + thisSeries.name.substring(0,2) +':</span>' + lastValue + '<span style=\"font-size: 0.7em;\"> ( ' + minVal  + ' | '  + maxVal + ')</span></li>';
 							//var valueNow =  '<li><span style=\"color: ' + thisSeries.color + '; \">' + thisSeries.name.substring(0,2) +': </span>'  + lastValue  + '</li>';
 							
-							$('#content .valuesNow').append(valueAve);
-							//$('#content .valuesAve').append(valueAve);
+							
 						};
 					});
 				});
+				
+				// add style for list width
+				//var valuesNowElementLiWidth= Math.floor(x/3 - 4).toString() + "px"  ;
+				//var valuesNowElements = document.querySelectorAll("#valuesNowLi");
+				//for (var i = 0; i < valuesNowElements.length; i++) {
+				//	valuesNowElements[i].style.width = valuesNowElementLiWidth;
+				//}
+				//valuesNowElements.forEach(function(thisValuesNowElement){console.log(thisValuesNowElement);});
+				//console.log(valuesNowElementLiWidth);
+					//thisValuesNowElement.style.width = valuesNowElementLiWidth;
+				
+				
+
+				
 				
 				var minVal  = Math.min.apply(Math, allTemps);
 				
@@ -100,7 +123,7 @@ var w = window,
 				var graph = new Rickshaw.Graph( {
 					element: document.querySelector('#graph'),
 					width: x*0.9,
-					height: y-250,
+					height: y-250-valuesFontHeight,
 					renderer: 'line',
 					interpolation: 'linear',
 					min: minVal - 1,
