@@ -155,8 +155,9 @@
 }
 .rickshaw_legend .line{
 	line-height:140%;
-	width: 27%;
-	padding-right:15px
+	width: 32%;
+	display: inline-block;
+	
 }
 .rickshaw_legend .line .swatch{
 	display:inline-block;
@@ -178,7 +179,7 @@
 	opacity:.6
 }
 .rickshaw_legend .action{
-	margin-right:.2em;
+	margin-right:0.5em;
 	font-size:10px;
 	cursor:pointer;
 	font-size:14px

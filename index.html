@@ -30,14 +30,11 @@
 			font-family: Arial;
 			background: #36454F;
 			position: relative; 
-			background: #36454F; 
 			color: #9aa2a7;
 		}
 
 		.button-group {
 			background: #2b373f;  
-			height: 30px; 
-			line-height:30px; 
 			padding-top: 5px; 
 			
 		}
@@ -71,22 +68,29 @@
 
 		.swatch {
 			display: inline-block;
-			width: 10px;
-			height: 10px;
-			margin: 0 8px 0 0;
+			color: #36454F;
+			font-weight : 900;
+			font-size: 2.7vw;
+			text-align: center;
+			margin: 0 4px 0 0;
+			border-radius: 2px;
+			border:1px solid rgba(0,0,0,.2)
+		}
+
+		.Tvalue {
+			display: inline-block;
+			font-size: 0.9em;
+		}
+
+		.AveValue {
+			display: inline-block;
+			font-size: 0.7em;
 		}
 
 		.label {
 			display: inline-block;
 		}
 
-		.line {
-			padding-left: 5px;
-			display: inline-block;
-			width: 31%;
-		}
-
-		}
 		.rickshaw_graph .detail {
 			background: none;
 		}
@@ -95,24 +99,31 @@
 			background: #2b373f; 
 		}
 
-		#valuesNow{
-		padding: 2%;
+		.graph-group{
+			padding-top: 20px;
 		}
 
 		.legend {
+			background: #2b373f;  
 			padding:2%;
-			height:50px;
 		}
 
+		.legendDate {
+			text-align: center;
+			background: #253037; 
+		}
+		
 		.center {
 			margin-left: auto;
 			margin-right: auto;
 			width: 90%;
 		}
 
+		
 		.ui-slider-range {
 		background: #9aa2a7;
 		}
+		
 		
 
 	</style>
@@ -128,16 +139,15 @@
 <body>
 	<div id="main" >
 		<div class="content" id="content" >
-			<div class="button-group" >
+			<div class="button-group" id="button-group">
 				<a href="#" id="myButtonDay" class=" button buttonWidth duration-day">Day</a>
 				<a href="#" id="myButton2Day" class=" button buttonWidth duration-2days">2 Days</a>
 				<a href="#" id="myButtonWeek" class=" button buttonWidth duration-week">Week</a>
 				<a href="#" id="myButtonMonth" class=" button buttonWidth duration-month">Month</a>
 				<a href="#" id="myButton90Days" class=" button buttonWidth duration-90">90 Days</a>
 			</div>
-			<div class="valuesNow values"  id="valuesNow"></div>
+			<div class="legend"  id="legend"></div>
 			<div class="graph-group">
-				<div class="legend"  id="legend"></div>
 				<div class="graph center" id="graph" ></div>
 				<div class="slider center" id="slider" ></div>
 				<div class="legendSwitch" id="legendSwitch"></div>

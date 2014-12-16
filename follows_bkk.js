@@ -1,13 +1,12 @@
 (function ( $ ){
 
 	var key		= 'vTij3orvHd4oT7dl31HQXaNFap85row4X9CbqD79tSEV8e7b', // Unique master Xively API key to be used as a default
-		TH_feed	= '2029082394', 
-		TH_datastreams	= ['Exterior','Saloon','BackCabin','Bathroom','WaterTank','Engine'], 
-		dataDuration	= '2days', 
-		dataInterval	= 900;  
-		dataDurationButtonID		= "myButton2Day";
-		
+		TH_feed	= '2029082394', // Comma separated array of Xively Feed ID numbers
+		TH_datastreams	= ['Bathroom','Saloon','BackCabin','Exterior','WaterTank','Engine'], //
+		dataDuration	= '2days', // Default duration of data to be displayed // ref: https://xively.com/dev/docs/api/data/read/historical_data/
+		dataInterval	= 900;// Default interval for data to be displayed (in seconds)
 // Function Declarations
+
 var w = window,
     d = document,
     e = d.documentElement,
@@ -26,14 +25,13 @@ var w = window,
 	document.getElementById("myButtonMonth").style.width = buttonWidth;
 	document.getElementById("myButton90Days").style.width = buttonWidth;
 
-
 	// adding font size
-	var legendElement = document.querySelector("#legend");
+	var valuesNowElement = document.querySelector("#valuesNow");
 	var valuesFontSize = Math.floor(x/26);
-	legendElement.style.height =  (x*0.065*2+valuesFontSize).toString() + "px" ;
-	legendElement.style.fontSize =  valuesFontSize.toString() + "px" ;
+	var valuesFontHeight = valuesFontSize*2.2
+	valuesNowElement.style.fontSize =  valuesFontSize.toString() + "px" ;
+	valuesNowElement.style.height = valuesFontHeight.toString() + "px" ;
 
-	
 	// Graph Annotations
 	function addAnnotation(force) {
 		if (messages.length > 0 && (force || Math.random() >= 0.95)) {
@@ -58,30 +56,6 @@ var w = window,
 			this.setTime(t);
 		}
 	};
-	Date.prototype.format=function(e){
-			var t="";
-			var n=Date.replaceChars;
-			for(var r=0;r<e.length;r++){
-				var i=e.charAt(r);
-				if(r-1>=0&&e.charAt(r-1)=="\\")
-					{t+=i}
-				else if(n[i])
-					{t+=n[i].call(this)}
-				else if(i!="\\"){t+=i}
-			}
-			return t
-		};
-		Date.replaceChars={
-			shortMonths:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-			shortDays:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
-			d:function(){return(this.getDate()<10?"0":"")+this.getDate()},
-			D:function(){return Date.replaceChars.shortDays[this.getDay()]},
-			M:function(){return Date.replaceChars.shortMonths[this.getMonth()]},
-			y:function(){return(""+this.getFullYear()).substr(2)},
-			H:function(){return(this.getHours()<10?"0":"")+this.getHours()},
-			i:function(){return(this.getMinutes()<10?"0":"")+this.getMinutes()},
-		}
-
 
 	// Parse Xively ISO Date Format to Date Object
 	Date.prototype.parseISO = function(iso){
@@ -95,45 +69,18 @@ var w = window,
 		xively.setKey(key);
 	}
 
-	
-	var buttonClicked = null;
-	function highlight(id) {
-		if(buttonClicked != null)
-			{
-			buttonClicked.style.background = "#d6d9db";
-			}
-
-		buttonClicked  = document.getElementById(id);
-		buttonClicked.style.background =  "#eaeced";
-	}
-
-	
-	function convertToDate(utcSeconds) {
-		var myDate = new Date(0);
-		myDate.setUTCSeconds(utcSeconds);
-		var dateString = myDate.format('D, d M y, H:i');
-		return dateString;
-		}
-	
 	mySeries = new Array();
+
 	function createGraph() {
 		var interval = setInterval(function(){
 			if(mySeries.length == TH_datastreams.length) {
 				// Initialize Graph DOM Element
 				$('#content .graph-group .graph').empty();
+				$('#content .graph-group .legend').empty();
 				$('#content .graph-group .legendSwitch').empty();
-				$('#content .legend').empty();
-				
+				$('#content .valuesNow').empty();
 				var valuesNow 
 				var allTemps = [];
-				
-				
-				var legend = document.querySelector('#legend');
-				var legendDate = document.createElement('div');
-				
-				legendDate.className = 'legendDate';
-				legendDate.style.margin =  ("0 0 0"  + (valuesFontSize/4).toString() + "px") ;
-				legend.appendChild(legendDate);
 				
 				TH_datastreams.forEach(function(datastreamName){
 					mySeries.forEach(function(thisSeries) {
@@ -146,50 +93,9 @@ var w = window,
 							var minVal  = Math.min.apply(Math, thisTemp);
 							var maxVal = Math.max.apply(Math, thisTemp);
 							var lastValue = thisTemp[thisTemp.length - 1];
-							
-							var lastDate = new Date(0);
-							var utcSeconds = thisSeries.data[thisSeries.data.length -1].x;
-
-							var dateString = convertToDate(utcSeconds) ;
-						
-							
-							legendDate.innerHTML = dateString;
 							var thisSeriesName =  thisSeries.name;
 							if (thisSeriesName == 'BackCabin'){thisSeriesName = 'Bc'}
 							else{thisSeriesName = thisSeriesName.substring(0,2) }
-							
-							var line = document.createElement('li');
-							line.id = 'valuesNowLi';
-							line.style.width = '33%'
-							
-							var swatch = document.createElement('div');
-							swatch.className = 'swatch';
-							swatch.style.backgroundColor = thisSeries.color;
-							swatch.innerHTML =  thisSeriesName;
-							swatch.style.width  = (x*0.05).toString() + "px" ;
-							swatch.style.height = (x*0.05).toString() + "px" ;
-							
-							
-							var Tvalue = document.createElement('div');
-							Tvalue.className = 'Tvalue';
-							Tvalue.id = 'Tvalue_' +  thisSeries.name;
-							console.log( 'Tvalue_' +  thisSeries.name)
-							Tvalue.innerHTML =  lastValue;
-							
-							var AveValue = document.createElement('div');
-							AveValue.className = 'AveValue';
-							AveValue.id = 'AveValue_' +  thisSeries.name;
-							AveValue.style.paddingLeft = (valuesFontSize/4).toString() + "px" ;
-							AveValue.innerHTML =  '(' + minVal  + ' | '  + maxVal + ')';
-							
-							
-							line.appendChild(swatch);
-							line.appendChild(Tvalue);
-							line.appendChild(AveValue);
-							
-							legend.appendChild(line);
-							
-							
 							$('#content .valuesNow').append('<li id=\"valuesNowLi\" style=\"width: 33%;\"><span style=\"color: ' + thisSeries.color + ';padding-right: 2px; \">' + thisSeriesName +':</span>' + lastValue + '<span style=\"font-size: 0.8em;\"> (' + minVal  + ' | '  + maxVal + ')</span></li>');
 							
 							//var valueNow =  '<li><span style=\"color: ' + thisSeries.color + '; \">' + thisSeries.name.substring(0,2) +': </span>'  + lastValue  + '</li>';
@@ -234,21 +140,33 @@ var w = window,
 				
 				graph.render();
 				
-				
+				var legend = document.querySelector('#legend');
 				var Hover = Rickshaw.Class.create(Rickshaw.Graph.HoverDetail, {
 					render: function(args) {
+						$('#content .graph-group .legend').empty();
 						
-						console.log(args)
-						utcSeconds = args.detail[0].value.x;
-						var dateString = convertToDate(utcSeconds) ;
-						legendDate.innerHTML = dateString;
+						var legendDate = document.createElement('div');
+						legendDate.className = 'legendDate';
+						legendDate.innerHTML = args.formattedXValue.substring(4,29) ;
+						legend.appendChild(legendDate);
 						
 						args.detail.sort(function(a, b) { return a.order - b.order }).forEach( function(d) {
+							var line = document.createElement('div');
+							line.className = 'line';
 
+							var swatch = document.createElement('div');
+							swatch.className = 'swatch';
+							swatch.style.backgroundColor = d.series.color;
 
-							var Tvalue = document.querySelector('#Tvalue_' + d.series.name);
-							console.log(Tvalue);
-							Tvalue.innerHTML = d.formattedYValue;
+							var label = document.createElement('div');
+							label.className = 'label';
+
+							label.innerHTML = d.name.substring(0,2)  + ": " + d.formattedYValue;
+
+							line.appendChild(swatch);
+							line.appendChild(label);
+
+							legend.appendChild(line);
 
 							var dot = document.createElement('div');
 							dot.className = 'dot';
@@ -360,12 +278,12 @@ var w = window,
 								if(datastream.id ==  'Saloon') {mycolor = '#FFD462'; myrenderer = 'line'}
 								if(datastream.id ==  'BackCabin') {mycolor = '#FC7D49'; myrenderer = 'line'}
 								if(datastream.id ==  'Bathroom') {mycolor = '#CF423C'; myrenderer = 'line'}
-								if(datastream.id ==  'WaterTank') {mycolor = '#2F9C9E'; myrenderer = 'line'}
+								if(datastream.id ==  'WaterTank') {mycolor = '#BF244D'; myrenderer = 'line'}
 								
-								if(datastream.id ==  'Exterior') {mycolor = '#74AFE3'; myrenderer = 'line'}
+								if(datastream.id ==  'Exterior') {mycolor = '#24ADA0'; myrenderer = 'line'}
 								
 								if(datastream.id ==  'Calorifier') {mycolor = '#FFFA7A'; myrenderer = 'line'}
-								if(datastream.id ==  'Engine') {mycolor = '#48995C'; myrenderer = 'line'}
+								if(datastream.id ==  'Engine') {mycolor = '#24AD69'; myrenderer = 'line'}
 								if(datastream.id ==  'Freezer') {mycolor = '#004C66'; myrenderer = 'line'}
 								if(datastream.id ==  'Fridge') {mycolor = '#1760FF'; myrenderer = 'line'}
 								if(datastream.id ==  'Temperature') {mycolor = '#3F0B1B'; myrenderer = 'line'}
@@ -400,42 +318,37 @@ var w = window,
 		xively.feed.history(id, {  duration: "2days", interval: 900 }, function (data) {
 			$('#content .duration-day').click(function() {
 				mySeries = []
-				highlight('myButtonDay')
 				updateFeeds(data.id, TH_datastreams, '1day', 900);
 				return false;
 			});
 			
 			$('#content .duration-2days').click(function() {
 				mySeries = []
-				highlight('myButton2Day')
+
 				updateFeeds(data.id, TH_datastreams, '2days', 900);
 				return false;
 			});
 			
 			$('#content .duration-week').click(function() {
 				mySeries = []
-				highlight('myButtonWeek')
 				updateFeeds(data.id, TH_datastreams, '1week', 900);
 				return false;
 			});
 
 			$('#content .duration-month').click(function() {
 				mySeries = []
-				highlight('myButtonMonth')
 				updateFeeds(data.id, TH_datastreams, '1month', 2400);
 				return false;
 			});
 
 			$('#content .duration-90').click(function() {
 				mySeries = []
-				highlight('myButton90Days')
 				updateFeeds(data.id, TH_datastreams, '90days', 9600);
 				return false;
 			});
 
 			// Handle Datastreams
 			if(dataDuration != '' && dataInterval != 0) {
-				highlight(dataDurationButtonID)
 				updateFeeds(data.id, TH_datastreams, dataDuration, dataInterval);
 
 			} else {
