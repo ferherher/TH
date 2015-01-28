@@ -119,6 +119,7 @@ var w = window,
 	function createGraph() {
 		var interval = setInterval(function(){
 			if(mySeries.length == TH_datastreams.length) {
+				clearInterval(interval);
 				// Initialize Graph DOM Element
 				$('#content .graph-group .graph').empty();
 				$('#content .graph-group .legendSwitch').empty();
@@ -134,10 +135,13 @@ var w = window,
 				legendDate.className = 'legendDate';
 				legendDate.style.margin =  ("0 0 0"  + (valuesFontSize/4).toString() + "px") ;
 				legend.appendChild(legendDate);
-				
+				myFinalSeries = new Array();
 				TH_datastreams.forEach(function(datastreamName){
 					mySeries.forEach(function(thisSeries) {
-						if (thisSeries.name == datastreamName){
+						if (thisSeries.name == datastreamName && thisSeries.data.length >= 50){
+							myFinalSeries.push(thisSeries)
+							console.log(thisSeries.name)
+							console.log(thisSeries.data)
 							var thisTemp = [];
 							thisSeries.data.forEach(function(thisData) {
 								allTemps.push(thisData.y);
@@ -229,7 +233,7 @@ var w = window,
 						bottom: 0.02,
 						left: 0.02
 						},
-					series: mySeries
+					series: myFinalSeries
 				});
 				
 				graph.render();
@@ -316,7 +320,7 @@ var w = window,
 					element: $('#slider')
 				});
 				
-				clearInterval(interval);
+				
 			}
 		}, 500);
 	}
@@ -330,20 +334,20 @@ var w = window,
 				feedData.datastreams.forEach(function(datastream) {
 
 					if(datastreamIds && datastreamIds != '' && datastreamIds.indexOf(datastream.id) >= 0) {
-						var now = new Date();
-						var then = new Date();
-						var updated = new Date;
-						updated = updated.parseISO(datastream.at);
+						//var now = new Date();
+						//var then = new Date();
+						//var updated = new Date;
+						//updated = updated.parseISO(datastream.at);
 						var diff = null;
 						if(duration == '1day') diff = 86400000;
 						if(duration == '2days') diff = 172800000;
 						if(duration == '1week') diff = 604800000;
 						if(duration == '1month') diff = 2628000000;
 						if(duration == '90days') diff = 7884000000;
-						then.setTime(now.getTime() - diff);
-						if(updated.getTime() > then.getTime()) {
+						//then.setTime(now.getTime() - diff);
+						//if(updated.getTime() > then.getTime()) {
 
-							console.log('Datastream requested! (' + datastream.id + ')');
+							
 						
 							xively.datastream.history(feedId, datastream.id, {duration: duration, interval: interval, limit: 1000}, function(datastreamData) {
 							points = [];
@@ -379,10 +383,11 @@ var w = window,
 										color: mycolor,
 										renderer : myrenderer,
 								});
+								console.log('Datastream requested! (' + datastream.id + ')');
 							});
-						} else {
-								$('#content .datastreams.datastreams .graphWrapper').html('<div class="alert alert-box no-info">Sorry, this datastream does not have any associated data.</div>');
-						}
+						//} else {
+								//$('#content .datastreams.datastreams .graphWrapper').html('<div class="alert alert-box no-info">Sorry, this datastream does not have any associated data.</div>');
+						//}
 					} else {
 								console.log('Datastream not requested! (' + datastream.id + ')');
 					}
