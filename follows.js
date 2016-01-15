@@ -2,7 +2,7 @@
 
 	var key		= 'vTij3orvHd4oT7dl31HQXaNFap85row4X9CbqD79tSEV8e7b', // Unique master Xively API key to be used as a default
 		TH_feed	= '2029082394', 
-		TH_datastreams	= ['Exterior','Saloon','BackCabin','Bathroom','WaterTank','Engine'], 
+		TH_datastreams	= ['Exterior','Saloon','BackCabin','Bathroom','WaterTank','Engine','Calorifier','Fridge','Freezer'], 
 		dataDuration	= '2days', 
 		dataInterval	= 900;  
 		dataDurationButtonID		= "myButton2Day";
