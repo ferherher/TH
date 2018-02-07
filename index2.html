@@ -277,7 +277,7 @@ $(document).ready(function()
 		},
 		yAxis: [{
             title: {
-                text: 'Temperature °F'
+                text: 'Temperature °C'
             },
             id: 'T'
     }, {
@@ -417,11 +417,14 @@ function loadChannelHistory(sentChannelIndex,channelNumber,key,sentFieldList,sen
 	 });
 }
 
+
+
+
   </script>
     <title>ThingSpeakMultichannel</title>
   </head>
   <body style="                      background-color: white;">
-    <div id="chart-container" style="height: 600px;"><br>
+    <div id="chart-container" ><br>
       Highstock Chart Here<br>
     </div>
     <div id="below chart"> <button style="width: 89px; margin-top: -18px;" value="Hide All"
@@ -456,3 +459,17 @@ function loadChannelHistory(sentChannelIndex,channelNumber,key,sentFieldList,sen
     </div>
   </body>
 </html>
+
+<script language="JavaScript">
+var w = window,
+    d = document,
+    e = d.documentElement,
+    g = d.getElementsByTagName('body')[0],
+    x = w.innerWidth || e.clientWidth || g.clientWidth,
+    y = (w.innerHeight|| e.clientHeight|| g.clientHeight) -50;
+	
+	document.getElementById("chart-container").style.width = x.toString() + "px" ;
+	document.getElementById("chart-container").style.height = y.toString() + "px" ;
+	var valuesFontSize = Math.floor(x/26);
+	document.getElementById("chart-container").style.fontSize =  valuesFontSize.toString() + "px" ;
+</script>
