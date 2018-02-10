@@ -12,7 +12,7 @@ var w = window,
     g = d.getElementsByTagName('body')[0],
     x = w.innerWidth || e.clientWidth || g.clientWidth,
     y = (w.innerHeight|| e.clientHeight|| g.clientHeight) -50;
-	valuesFontSize = Math.floor(x/26);
+	valuesFontSize = Math.floor(x/30);
 
 </script>
 
@@ -67,14 +67,6 @@ function HideAll(){
       //  This is where the chart is generated.
 $(document).ready(function() 
 {
- //Add Channel Load Menu
- var menu=document.getElementById("Channel Select");
- for (var channelIndex=0; channelIndex<channelKeys.length; channelIndex++)  // iterate through each channel
- {
-   //window.console && console.log('Name',channelKeys[channelIndex].name);
-   var menuOption =new Option(channelKeys[channelIndex].name,channelIndex);
-   menu.options.add(menuOption,channelIndex);
- }
  var last_date; // variable for the last date added to the chart
  //window.console && console.log('Testing console');
  //make series numbers for each field
@@ -141,8 +133,13 @@ $(document).ready(function()
 		chart: 
 		{
 			renderTo: 'chart-container',
-			zoomType:'y',
+			//zoomType:'y',
 			style: {fontSize : valuesFontSize.toString() + "px"},
+			//responsive: true, 
+			//maintainAspectRatio: false,
+			height:y,
+			spacingTop: Math.floor(y*0.04),
+			spacingBottom: Math.floor(y*0.1),
 			events: 
 		  {
         load: function() 
@@ -203,11 +200,15 @@ $(document).ready(function()
 			}
 		},
 		rangeSelector: {
+		buttonPosition: {y:-Math.floor(y*0.02)},
+		buttonTheme: {
+                    width: Math.floor(x/6.5),
+					height: Math.floor(y*0.06)
+					
+                },
+
+		//floating: true,
 			buttons: [{
-				count: 30,
-				type: 'minute',
-				text: '30M'
-			}, {
 				count: 12,
 				type: 'hour',
 				text: '12H'
@@ -231,9 +232,6 @@ $(document).ready(function()
 				count: 1,
 				type: 'year',
 				text: 'Y'
-			}, {
-				type: 'all',
-				text: 'All'
 			}],
 			inputEnabled: false,
 			selected: 2
@@ -303,14 +301,28 @@ $(document).ready(function()
         }
 		},
 		legend: {
-		  enabled: true
+			margin: Math.floor(y*0.08),
+			y: Math.floor(y*0.08),
+			floating:  true,
+			itemStyle:{fontSize : (valuesFontSize*1.25).toString() + "px"},
+			squareSymbol : true,
+			symbolHeight: valuesFontSize*2 , 
+			symbolWidth: valuesFontSize*2 ,
+			symbolRadius : valuesFontSize*2 ,
+			enabled: true
 		},
+		
 		navigator: {
-      baseSeries: 0,  //select which series to show in history navigator, First series is 0
-      series: {
-            includeInCSVExport: false
-        }
-		},    
+		handles:{
+			//lineWidth: valuesFontSize*0.5
+			width: valuesFontSize,
+			height: valuesFontSize*2
+			},
+		xAxis: {labels: {style: {fontSize : valuesFontSize.toString() + "px"}}},
+		height: Math.floor(y*0.06),
+		marging: 50,
+		baseSeries: 0,  //select which series to show in history navigator, First series is 0
+		},
 		series: []
     //series: [{data:[[getChartDate("2013-06-16T00:32:40Z"),75]]}]      
 	};
@@ -365,13 +377,6 @@ $(document).ready(function()
  }
 });
       
-function loadOneChannel(){ 
-  // load a channel selected in the popUp menu.
-  var selectedChannel=document.getElementById("Channel Select");
-  var maxLoads=document.getElementById("Loads").value ;
-  var channelIndex = selectedChannel.selectedIndex;
-  loadChannelHistory(channelIndex,channelKeys[channelIndex].channelNumber,channelKeys[channelIndex].key,channelKeys[channelIndex].fieldList,0,maxLoads); 
-} 
 
 // load next 8000 points from a ThingSpeak channel and addPoints to a series
 function loadChannelHistory(sentChannelIndex,channelNumber,key,sentFieldList,sentNumLoads,maxLoads) {
@@ -430,39 +435,18 @@ function loadChannelHistory(sentChannelIndex,channelNumber,key,sentFieldList,sen
 
 
   </script>
-    <title>ThingSpeakMultichannel</title>
+    <title>TH Chart loading</title>
   </head>
-  <body style="                      background-color: white;">
+  <body style="background-color: white;">
     <div id="chart-container" ><br>
       Highstock Chart Here<br>
     </div>
-    <div id="below chart"> <button style="width: 89px; margin-top: -18px;" value="Hide All"
+    <div id="below chart">
+	<button style=" margin-top: -18px;" value="Hide All"
         name="Hide All Button"
         onclick="HideAll();">Hide
-        All</button><button style="width: 162px; margin-top: -18px;" value="Load More Data"
-        name="Load More Data"
-        onclick="loadOneChannel();">Load
-        More Historical Data </button>
-      <select id="Channel Select">
-      </select>
-      <select id="Loads">
-        <option value="1">1 Load</option>
-        <option value="2">2 Loads</option>
-        <option value="3">3 Loads</option>
-        <option value="4">4 Loads</option>
-        <option value="5" selected="selected">5 Loads</option>
-        <option value="6">6 Loads</option>
-        <option value="7">7 Loads</option>
-        <option value="8">8 Loads</option>
-        <option value="9">9 Loads</option>
-        <option value="10">10 Loads</option>
-        <option value="15">15 Loads</option>
-        <option value="20">20 Loads</option>
-        <option value="25">25 Loads</option>
-        <option value="30">30 Loads</option>
-        <option value="40">40 Loads</option>
-        <option value="50">50 Loads</option>
-      </select>
+        All</button>
+
       <input id="Update" name="Update" type="checkbox"><span style="font-family: Lucida Grande;">Update
         Chart</span> <span id="Latency" style="font-family: Lucida Grande;">(Latency)</span>
     </div>
@@ -473,9 +457,219 @@ function loadChannelHistory(sentChannelIndex,channelNumber,key,sentFieldList,sen
 
 	
 	document.getElementById("chart-container").style.width = x.toString() + "px" ;
-	document.getElementById("chart-container").style.height = y.toString() + "px" ;
-	var valuesFontSize = Math.floor(x/26);
+	//document.getElementById("chart-container").style.height = (y -200).toString() + "px" ;
 	document.getElementById("chart-container").style.fontSize =  valuesFontSize.toString() + "px" ;
+	
+	
+	Highcharts.theme = {
+	colors: ['#2b908f', '#90ee7e', '#f45b5b', '#7798BF', '#aaeeee', '#ff0066',
+		'#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'],
+	chart: {
+		backgroundColor: {
+			linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+			stops: [
+				[0, '#2a2a2b'],
+				[1, '#3e3e40']
+			]
+		},
+		style: {
+			fontFamily: '\'Unica One\', sans-serif'
+		},
+		plotBorderColor: '#606063'
+	},
+	title: {
+		style: {
+			color: '#E0E0E3',
+			textTransform: 'uppercase',
+			fontSize: '20px'
+		}
+	},
+	subtitle: {
+		style: {
+			color: '#E0E0E3',
+			textTransform: 'uppercase'
+		}
+	},
+	xAxis: {
+		gridLineColor: '#707073',
+		labels: {
+			style: {
+				color: '#E0E0E3'
+			}
+		},
+		lineColor: '#707073',
+		minorGridLineColor: '#505053',
+		tickColor: '#707073',
+		title: {
+			style: {
+				color: '#A0A0A3'
+
+			}
+		}
+	},
+	yAxis: {
+		gridLineColor: '#707073',
+		labels: {
+			style: {
+				color: '#E0E0E3'
+			}
+		},
+		lineColor: '#707073',
+		minorGridLineColor: '#505053',
+		tickColor: '#707073',
+		tickWidth: 1,
+		title: {
+			style: {
+				color: '#A0A0A3'
+			}
+		}
+	},
+	tooltip: {
+		backgroundColor: 'rgba(0, 0, 0, 0.85)',
+		style: {
+			color: '#F0F0F0'
+		}
+	},
+	plotOptions: {
+		series: {
+			dataLabels: {
+				color: '#B0B0B3'
+			},
+			marker: {
+				lineColor: '#333'
+			}
+		},
+		boxplot: {
+			fillColor: '#505053'
+		},
+		candlestick: {
+			lineColor: 'white'
+		},
+		errorbar: {
+			color: 'white'
+		}
+	},
+	legend: {
+		itemStyle: {
+			color: '#E0E0E3'
+		},
+		itemHoverStyle: {
+			color: '#FFF'
+		},
+		itemHiddenStyle: {
+			color: '#606063'
+		}
+	},
+	credits: {
+		style: {
+			color: '#666'
+		}
+	},
+	labels: {
+		style: {
+			color: '#707073'
+		}
+	},
+
+	drilldown: {
+		activeAxisLabelStyle: {
+			color: '#F0F0F3'
+		},
+		activeDataLabelStyle: {
+			color: '#F0F0F3'
+		}
+	},
+
+	navigation: {
+		buttonOptions: {
+			symbolStroke: '#DDDDDD',
+			theme: {
+				fill: '#505053'
+			}
+		}
+	},
+
+	// scroll charts
+	rangeSelector: {
+		buttonTheme: {
+			fill: '#505053',
+			stroke: '#000000',
+			style: {
+				color: '#CCC'
+			},
+			states: {
+				hover: {
+					fill: '#707073',
+					stroke: '#000000',
+					style: {
+						color: 'white'
+					}
+				},
+				select: {
+					fill: '#000003',
+					stroke: '#000000',
+					style: {
+						color: 'white'
+					}
+				}
+			}
+		},
+		inputBoxBorderColor: '#505053',
+		inputStyle: {
+			backgroundColor: '#333',
+			color: 'silver'
+		},
+		labelStyle: {
+			color: 'silver'
+		}
+	},
+
+	navigator: {
+		handles: {
+			backgroundColor: '#666',
+			borderColor: '#AAA'
+		},
+		outlineColor: '#CCC',
+		maskFill: 'rgba(255,255,255,0.1)',
+		series: {
+			color: '#7798BF',
+			lineColor: '#A6C7ED'
+		},
+		xAxis: {
+			gridLineColor: '#505053'
+		}
+	},
+
+	scrollbar: {
+		barBackgroundColor: '#808083',
+		barBorderColor: '#808083',
+		buttonArrowColor: '#CCC',
+		buttonBackgroundColor: '#606063',
+		buttonBorderColor: '#606063',
+		rifleColor: '#FFF',
+		trackBackgroundColor: '#404043',
+		trackBorderColor: '#404043'
+	},
+
+	// special colors for some of the
+	legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+	background2: '#505053',
+	dataLabelsColor: '#B0B0B3',
+	textColor: '#C0C0C0',
+	contrastTextColor: '#F0F0F3',
+	maskColor: 'rgba(255,255,255,0.3)'
+};
+
+
+
+
+// Apply the theme
+Highcharts.setOptions(Highcharts.theme);
+Highcharts.setOptions({
+                    lang:{
+                        rangeSelectorZoom: ''
+                    }
+            });
 	
 	// adding font size 
 	
