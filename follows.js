@@ -346,6 +346,7 @@
 		{
 
 		if(data != -1){
+			console.log( data.feeds.length )
 			for (var fieldIndex=0; fieldIndex<fieldList.length; fieldIndex++)  // iterate through each field
 				{
 				fieldList[fieldIndex].data =[];
@@ -386,7 +387,7 @@
 						//$('#content .datastreams.datastreams .graphWrapper').html('<div class="alert alert-box no-info">Sorry, this datastream does not have any associated data.</div>');
 				//}
 			} else {
-						//console.log('no data from request!!');
+						console.log('no data from request!!');
 			}
 			// Create Datastream UI
 			//$('.datastreams' ).empty();
