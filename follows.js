@@ -42,7 +42,7 @@
 	// adding font size
 	var legendElement = document.querySelector("#legend");
 	var valuesFontSize = Math.floor(x/26);
-	legendElement.style.height =  (x*0.065*2+valuesFontSize).toString() + "px" ;
+	legendElement.style.height =  (x*0.065*(Math.ceil(fieldList.length/3))+valuesFontSize).toString() + "px" ;
 	legendElement.style.fontSize =  valuesFontSize.toString() + "px" ;
 
 	
