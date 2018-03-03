@@ -1,10 +1,10 @@
 (function ( $ ){
 
-	var	TH_datastreams	= ["EX_T","SA_T","BA_T","BC_T","CA_T","WT_T","EN_T","FR_T"];
-	var fieldList= [{field:1,mycolor:'#74AFE3'}, {field:2,mycolor:'#FFD462'}, 
-					{field:3,mycolor:'#CF423C'}, {field:4,mycolor:'#FC7D49'},
-					{field:5,mycolor:'#FFFA7A'}, {field:6,mycolor:'#2F9C9E'},
-					{field:7,mycolor:'#48995C'}, {field:8,mycolor:'#1760FF'}],
+	var fieldList= [{field:8,mycolor:'#475c8c'}, {field:7,mycolor:'#48995C'},
+					{field:6,mycolor:'#2F9C9E'}, {field:5,mycolor:'#b86cb0'}, 
+					{field:3,mycolor:'#CF423C'}, {field:4,mycolor:'#FC7D49'},  
+					{field:2,mycolor:'#FFD462'}, {field:1,mycolor:'#74AFE3'}
+					],
 
 		
 		
@@ -143,7 +143,7 @@
 				
 				legendDate.className = 'legendDate';
 				legendDate.style.margin =  ("0 0 0"  + (valuesFontSize/4).toString() + "px") ;
-				legend.appendChild(legendDate);
+
 				mySeries.forEach(function(thisSeries) {
 					//console.log(thisSeries.name + ' length '+ thisSeries.data.length);	
 					if (thisSeries.data.length >= 8){
@@ -164,9 +164,6 @@
 					
 						
 						legendDate.innerHTML = dateString;
-						var thisSeriesName =  thisSeries.name;
-						if (thisSeriesName == 'BackCabin'){thisSeriesName = 'Bc'}
-						else{thisSeriesName = thisSeriesName.substring(0,2) }
 						
 						var line = document.createElement('li');
 						line.id = 'valuesNowLi';
@@ -175,7 +172,7 @@
 						var swatch = document.createElement('div');
 						swatch.className = 'swatch';
 						swatch.style.backgroundColor = thisSeries.color;
-						swatch.innerHTML =  thisSeriesName;
+						swatch.innerHTML =  thisSeries.name;
 						swatch.style.width  = (x*0.05).toString() + "px" ;
 						swatch.style.height = (x*0.05).toString() + "px" ;
 						
@@ -197,16 +194,19 @@
 						line.appendChild(Tvalue);
 						line.appendChild(AveValue);
 						
-						legend.appendChild(line);
+						//legend.appendChild(line);
+						legend.insertBefore(line, legend.firstChild);
 						
 						
-						$('#content .valuesNow').append('<li id=\"valuesNowLi\" style=\"width: 33%;\"><span style=\"color: ' + thisSeries.color + ';padding-right: 2px; \">' + thisSeriesName +':</span>' + lastValue + '<span style=\"font-size: 0.8em;\"> (' + minVal  + ' | '  + maxVal + ')</span></li>');
+						//$('#content .valuesNow').prepend('<li id=\"valuesNowLi\" style=\"width: 33%;\"><span style=\"color: ' + thisSeries.color + ';padding-right: 2px; \">' + thisSeries.name +':</span>' + lastValue + '<span style=\"font-size: 0.8em;\"> (' + minVal  + ' | '  + maxVal + ')</span></li>');
 						
 						//var valueNow =  '<li><span style=\"color: ' + thisSeries.color + '; \">' + thisSeries.name.substring(0,2) +': </span>'  + lastValue  + '</li>';
 									
 					};
 				});
 				
+				
+				legend.insertBefore(legendDate, legend.firstChild);
 				// add style for list width
 				//var valuesNowElementLiWidth= Math.floor(x/3 - 4).toString() + "px"  ;
 				//var valuesNowElements = document.querySelectorAll("#valuesNowLi");
@@ -377,7 +377,7 @@
 					//////console.log(fieldList[fieldIndex].name);
 					// Add Datapoints Array to Graph Series Array
 					mySeries.push({
-							name: fieldList[fieldIndex].name,
+							name: fieldList[fieldIndex].name.substring(0,2),
 							data: fieldList[fieldIndex].data,
 							color: fieldList[fieldIndex].mycolor,
 							renderer : myrenderer,
