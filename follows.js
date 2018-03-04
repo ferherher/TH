@@ -219,7 +219,7 @@
 					render: function(args) {
 						
 						//console.log(args)
-						utcSeconds = args.detail[0].value.x;
+						utcSeconds = args.detail[7].value.x;
 						var dateString = convertToDate(utcSeconds) ;
 						legendDate.innerHTML = dateString;
 						
