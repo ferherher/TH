@@ -1,23 +1,19 @@
 (function ( $ ){
 
-	var fieldList= [{field:8,mycolor:'#475c8c'}, {field:7,mycolor:'#48995C'},
-					{field:6,mycolor:'#2F9C9E'}, {field:5,mycolor:'#b86cb0'}, 
-					{field:3,mycolor:'#CF423C'}, {field:4,mycolor:'#FC7D49'},  
-					{field:2,mycolor:'#FFD462'}, {field:1,mycolor:'#74AFE3'}
-					],
-
-		
-		
-		dataDuration	= '2days', 
-		dataInterval	= 900,
-		dataDurationButtonID		= "myButton2Day";
+	var fieldList= [{field:8,mycolor:'#3e506d', id:'FR'}, {field:7,mycolor:'#566f4c', id:'EN'},
+					{field:6,mycolor:'#30676d', id:'WT'}, {field:5,mycolor:'#77587f', id:'CA'}, 
+					{field:3,mycolor:'#824446', id:'BA'}, {field:4,mycolor:'#FC7D49', id:'BC'},  
+					{field:2,mycolor:'#FFD462', id:'SA'}, {field:1,mycolor:'#74AFE3', id:'EX'}
+					];
+	var mySeries = new Array();
+	
+	// get id and key from url
     var parameters = location.search.substring(1).split("&");
     var temp = parameters[0].split("=");
     var TSid = unescape(temp[1]);
     temp = parameters[1].split("=");
     var TSkey = unescape(temp[1]);
-	var mySeries = new Array();
-		
+	var lastLogDate = new Date();
 		
 	// Function Declarations
 	var w = window,
@@ -45,31 +41,7 @@
 	legendElement.style.height =  (x*0.065*(Math.ceil(fieldList.length/3))+valuesFontSize).toString() + "px" ;
 	legendElement.style.fontSize =  valuesFontSize.toString() + "px" ;
 
-	
-	// Graph Annotations
-	function addAnnotation(force) {
-		if (messages.length > 0 && (force || Math.random() >= 0.95)) {
-			annotator.add(seriesData[2][seriesData[2].length-1].x, messages.shift());
-		}
-	};
 
-	// Add One (1) Day to Date Object
-	Date.prototype.addDays = function (d) {
-		if (d) {
-			var t = this.getTime();
-			t = t + (d * 86400000);
-			this.setTime(t);
-		}
-	};
-
-	// Subtract One (1) Day to Date Object
-	Date.prototype.subtractDays = function (d) {
-		if (d) {
-			var t = this.getTime();
-			t = t - (d * 86400000);
-			this.setTime(t);
-		}
-	};
 	
 	Date.prototype.format=function(e){
 			var t="";
@@ -95,13 +67,6 @@
 			i:function(){return(this.getMinutes()<10?"0":"")+this.getMinutes()},
 		}
 
-
-	// Parse Xively ISO Date Format to Date Object
-	Date.prototype.parseISO = function(iso){
-		var stamp= Date.parse(iso);
-		if(!stamp) throw iso +' Unknown date format';
-		return new Date(stamp);
-	}
 
 	var buttonClicked = null;
 	function highlight(id) {
@@ -129,12 +94,13 @@
 		var numberOfPoints = setInterval(function(){
 			if(mySeries.length == fieldList.length) {
 				clearInterval(numberOfPoints);
+				
+				
 				// Initialize Graph DOM Element
 				$('#content .graph-group .graph').empty();
 				$('#content .graph-group .legendSwitch').empty();
 				$('#content .legend').empty();
 				
-				var valuesNow 
 				var allMins = [];
 				
 				
@@ -143,6 +109,7 @@
 				
 				legendDate.className = 'legendDate';
 				legendDate.style.margin =  ("0 0 0"  + (valuesFontSize/4).toString() + "px") ;
+
 
 				mySeries.forEach(function(thisSeries) {
 					//console.log(thisSeries.name + ' length '+ thisSeries.data.length);	
@@ -194,30 +161,23 @@
 						line.appendChild(Tvalue);
 						line.appendChild(AveValue);
 						
-						//legend.appendChild(line);
 						legend.insertBefore(line, legend.firstChild);
 						
-						
-						//$('#content .valuesNow').prepend('<li id=\"valuesNowLi\" style=\"width: 33%;\"><span style=\"color: ' + thisSeries.color + ';padding-right: 2px; \">' + thisSeries.name +':</span>' + lastValue + '<span style=\"font-size: 0.8em;\"> (' + minVal  + ' | '  + maxVal + ')</span></li>');
-						
-						//var valueNow =  '<li><span style=\"color: ' + thisSeries.color + '; \">' + thisSeries.name.substring(0,2) +': </span>'  + lastValue  + '</li>';
 									
 					};
 				});
 				
 				
+				// highlight date if last log is not from the current day
+				currentDay = new Date().getDate();
+				lastLogDay = new Date(lastLogDate).getDate();
+				if(currentDay != lastLogDay)
+					{
+					legendDate.style.background =  "#e9002f";
+					};
+					
+				
 				legend.insertBefore(legendDate, legend.firstChild);
-				// add style for list width
-				//var valuesNowElementLiWidth= Math.floor(x/3 - 4).toString() + "px"  ;
-				//var valuesNowElements = document.querySelectorAll("#valuesNowLi");
-				//for (var i = 0; i < valuesNowElements.length; i++) {
-				//	valuesNowElements[i].style.width = valuesNowElementLiWidth;
-				//}
-				//valuesNowElements.forEach(function(thisValuesNowElement){////console.log(thisValuesNowElement);});
-				//////console.log(valuesNowElementLiWidth);
-					//thisValuesNowElement.style.width = valuesNowElementLiWidth;
-				
-				
 
 
 				
@@ -306,9 +266,10 @@
 				});
 				
 				yAxis.render();
-
-				// Enable Datapoint Hover Values
+				
 				/*
+				// Enable Datapoint Hover Values
+				
 				var hoverDetail = new Rickshaw.Graph.HoverDetail({
 					graph: graph,
 					formatter: function(series, x, y) {
@@ -317,13 +278,13 @@
 						return content;
 					}
 				});
-					*/
 					
+				
 				var slider = new Rickshaw.Graph.RangeSlider({
 					graph: graph,
 					element: $('#slider')
 				});
-				
+				*/
 				
 			}
 		}, 500);
@@ -346,7 +307,8 @@
 		{
 
 		if(data != -1){
-			console.log( data.feeds.length )
+			//console.log( data.feeds.length )
+			lastLogDate = data.channel.updated_at
 			for (var fieldIndex=0; fieldIndex<fieldList.length; fieldIndex++)  // iterate through each field
 				{
 				fieldList[fieldIndex].data =[];
@@ -441,14 +403,10 @@
 				return false;
 			});
 
-			// Handle Datastreams
-			if(dataDuration != '' && dataInterval != 0) {
-				highlight(dataDurationButtonID)
-				updateFeeds(2,0);
+			// initial duritionn to 2 days
+			highlight('myButton2Day')
+			updateFeeds(2,0);
 
-			} else {
-				updateFeeds(1,0);
-			}
 	}
 // END Function Declarations
 // BEGIN Initialization
