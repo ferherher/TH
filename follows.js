@@ -321,7 +321,7 @@
 
 		if(data != -1){
 			//console.log( data.feeds.length )
-			lastLogDate = new Date(data.channel.updated_at)
+			
 			for (var fieldIndex=0; fieldIndex<fieldList.length; fieldIndex++)  // iterate through each field
 				{
 				fieldList[fieldIndex].data =[];
@@ -361,6 +361,7 @@
 					});
 				};
 			//draw rectangle on minus 0
+			lastLogDate =  new Date(data.feeds[data.feeds.length - 1].created_at);
 			firstLogDate = new Date(data.feeds[0].created_at);
 			
 			// Add Datapoints Array to Graph Series Array
