@@ -7,7 +7,7 @@
 					];
 	var mySeries = new Array();
 	
-	// get id and key from url
+	// get TSid and TSkey from url
     var parameters = location.search.substring(1).split("&");
     var temp = parameters[0].split("=");
     var TSid = unescape(temp[1]);
@@ -90,10 +90,10 @@
 
 	function createGraph() {
 		//console.log('starting createGraph');
-		// waait for the requeat to come back before continuing
-		var numberOfPoints = setInterval(function(){
+		// wait for the request to arrive before continuing
+		var myInterval = setInterval(function(){
 			if(mySeries.length == fieldList.length) {
-				clearInterval(numberOfPoints);
+				clearInterval(myInterval);
 				
 				
 				// Initialize Graph DOM Element
@@ -114,7 +114,7 @@
 				mySeries.forEach(function(thisSeries) {
 					//console.log(thisSeries.name + ' length '+ thisSeries.data.length);	
 					if (thisSeries.data.length >= 8){
-
+						/*
 						var thisTemp = [];
 						thisSeries.data.forEach(function(thisData) {
 							thisTemp.push(thisData.y);
@@ -123,12 +123,13 @@
 						allMins.push(minVal);
 						var maxVal = Math.max.apply(Math, thisTemp);
 						var lastValue = thisTemp[thisTemp.length - 1];
+						*/
 						
-						var lastDate = new Date(0);
+						allMins.push(thisSeries.minmax.min);
+						var lastValue  = thisSeries.data[thisSeries.data.length -1].y;
+						
 						var utcSeconds = thisSeries.data[thisSeries.data.length -1].x;
-
 						var dateString = convertToDate(utcSeconds) ;
-					
 						
 						legendDate.innerHTML = dateString;
 						
@@ -154,7 +155,7 @@
 						AveValue.className = 'AveValue';
 						AveValue.id = 'AveValue_' +  thisSeries.name;
 						AveValue.style.paddingLeft = (valuesFontSize/4).toString() + "px" ;
-						AveValue.innerHTML =  '(' + minVal  + ' | '  + maxVal + ')';
+						AveValue.innerHTML =  '(' + thisSeries.minmax.min  + ' | '  + thisSeries.minmax.max + ')';
 						
 						
 						line.appendChild(swatch);
@@ -167,7 +168,7 @@
 					};
 				});
 				
-				
+				//console.log( 'allmins ' +  allMins)
 				// highlight date if last log is not from the current day
 				currentDay = new Date().getDate();
 				lastLogDay = new Date(lastLogDate).getDate();
@@ -181,7 +182,7 @@
 
 
 				
-				var minVal  = Math.min.apply(Math, allMins);
+				var minVal  = Math.min.apply(Math, allMins.filter(isFinite));
 				//console.log('minval '+ minVal);
 				// Build Graph
 				var graph = new Rickshaw.Graph( {
@@ -312,49 +313,45 @@
 			for (var fieldIndex=0; fieldIndex<fieldList.length; fieldIndex++)  // iterate through each field
 				{
 				fieldList[fieldIndex].data =[];
+				var thisTemp = [];
 				for (var h=0; h<data.feeds.length; h++)  // iterate through each feed (data point)
 					{
-					var p = []//new Highcharts.Point();
+					var p = []
 					var fieldStr = "data.feeds["+h+"].field"+fieldList[fieldIndex].field;
 					var v = eval(fieldStr);
-					//p[0] = getChartDate(data.feeds[h].created_at);
+	
 					p[0] = new Date(data.feeds[h].created_at).getTime()/1000.0
 					p[1] = parseFloat(v);
+					thisTemp.push(p[1]);
 					// if a numerical value exists add it
 					if (!isNaN(parseInt(v))) { fieldList[fieldIndex].data.push({x:p[0], y:p[1]}); }
+					else {fieldList[fieldIndex].data.push({x:p[0], y:null});}
 					}
+				var minVal  = Math.min.apply(Math, thisTemp.filter(isFinite));
+				var maxVal = Math.max.apply(Math, thisTemp.filter(isFinite));
 				fieldList[fieldIndex].name = eval("data.channel.field"+fieldList[fieldIndex].field);
+				fieldList[fieldIndex].minmax = {min:minVal, max:maxVal};
 				};
 				
 				
 			for (var fieldIndex=0; fieldIndex<fieldList.length; fieldIndex++)
 				{
-					// Historical Datapoints
-
 					var mycolor = 'steelblue';
 					var myrenderer = 'line';
 
-					//B82A64					
-					
-					//////console.log(fieldList[fieldIndex].name);
 					// Add Datapoints Array to Graph Series Array
 					mySeries.push({
 							name: fieldList[fieldIndex].name.substring(0,2),
 							data: fieldList[fieldIndex].data,
 							color: fieldList[fieldIndex].mycolor,
 							renderer : myrenderer,
+							minmax: fieldList[fieldIndex].minmax
 					});
 				};
-			//} else {
-						//$('#content .datastreams.datastreams .graphWrapper').html('<div class="alert alert-box no-info">Sorry, this datastream does not have any associated data.</div>');
-				//}
+
 			} else {
 						console.log('no data from request!!');
 			}
-			// Create Datastream UI
-			//$('.datastreams' ).empty();
-			//$('.datastreams' ).remove();
-
 			});
 					//console.log(mySeries);
 			createGraph();
@@ -368,7 +365,6 @@
 				mySeries = []
 				highlight('myButtonDay')
 				updateFeeds(1,0);
-				//console.log('click 1');
 				return false;
 			});
 			
@@ -376,7 +372,6 @@
 				mySeries = []
 				highlight('myButton2Day')
 				updateFeeds(2,0);
-				//console.log('click 2');
 				return false;
 			});
 			
@@ -384,7 +379,6 @@
 				mySeries = []
 				highlight('myButtonWeek')
 				updateFeeds(7,30);
-				//console.log('click 7');
 				return false;
 			});
 
@@ -392,7 +386,6 @@
 				mySeries = []
 				highlight('myButtonMonth')
 				updateFeeds(30,60);
-				//console.log('click 30');
 				return false;
 			});
 
@@ -403,7 +396,7 @@
 				return false;
 			});
 
-			// initial duritionn to 2 days
+			// initial duration to 2 days
 			highlight('myButton2Day')
 			updateFeeds(2,0);
 
