@@ -14,6 +14,7 @@
     temp = parameters[1].split("=");
     var TSkey = unescape(temp[1]);
 	var lastLogDate = new Date();
+	var firstLogDate = new Date();
 		
 	// Function Declarations
 	var w = window,
@@ -171,7 +172,7 @@
 				//console.log( 'allmins ' +  allMins)
 				// highlight date if last log is not from the current day
 				currentDay = new Date().getDate();
-				lastLogDay = new Date(lastLogDate).getDate();
+				lastLogDay = lastLogDate.getDate();
 				if(currentDay != lastLogDay)
 					{
 					legendDate.style.background =  "#e9002f";
@@ -181,15 +182,25 @@
 				legend.insertBefore(legendDate, legend.firstChild);
 
 
-				
+				//console.log( [{x:firstLogDate, y:0}, {x:lastLogDate, y:0}]);
 				var minVal  = Math.min.apply(Math, allMins.filter(isFinite));
+				
+				mySeries.unshift({
+						name: 'minus0',
+						data: [{x:firstLogDate.getTime()/1000.0, y:minVal - 1}, {x:lastLogDate.getTime()/1000.0, y:minVal - 1}],
+						color: '#74AFE3',
+						renderer : 'stack',
+						opacity: 0.1
+						});
+				
+						
 				//console.log('minval '+ minVal);
 				// Build Graph
 				var graph = new Rickshaw.Graph( {
 					element: document.querySelector('#graph'),
 					width: x*0.9,
 					height: y*0.5,
-					renderer: 'line',
+					renderer: 'multi',
 					interpolation: 'linear',
 					min: minVal - 1,
 					padding: {
@@ -214,7 +225,7 @@
 						
 						args.detail.sort(function(a, b) { return a.order - b.order }).forEach( function(d) {
 
-
+							if(d.series.name != 'minus0'){
 							var Tvalue = document.querySelector('#Tvalue_' + d.series.name);
 							//console.log(Tvalue);
 							Tvalue.innerHTML = d.formattedYValue;
@@ -229,6 +240,7 @@
 							dot.className = 'dot active';
 
 							this.show();
+							};
 
 						}, this );
 						}
@@ -290,7 +302,7 @@
 			}
 		}, 500);
 	}
-	
+	/*
 	var myOffset = new Date().getTimezoneOffset();
 	function getChartDate(d) {
 		// get the data using javascript's date object (year, month, day, hour, minute, second)
@@ -298,7 +310,7 @@
 		// offset in minutes is converted to milliseconds and subtracted so that chart's x-axis is correct
 		return Date.UTC(d.substring(0,4), d.substring(5,7)-1, d.substring(8,10), d.substring(11,13), d.substring(14,16), d.substring(17,19)) - (myOffset * 60000);
 		}
-	
+	*/
 	function updateFeeds(numberOfDays,interval) {
 		var jsonString = 'https://www.thingspeak.com/channels/'+TSid+'/feeds.json?callback=?&amp;offset=0&amp;round=1;status=0;metadata=0;location=0;results='+numberOfDays*24*4+';key='+TSkey
 		if(interval != 0) {jsonString = jsonString+';median='+interval};
@@ -309,7 +321,7 @@
 
 		if(data != -1){
 			//console.log( data.feeds.length )
-			lastLogDate = data.channel.updated_at
+			lastLogDate = new Date(data.channel.updated_at)
 			for (var fieldIndex=0; fieldIndex<fieldList.length; fieldIndex++)  // iterate through each field
 				{
 				fieldList[fieldIndex].data =[];
@@ -348,6 +360,11 @@
 							minmax: fieldList[fieldIndex].minmax
 					});
 				};
+			//draw rectangle on minus 0
+			firstLogDate = new Date(data.feeds[0].created_at);
+			
+			// Add Datapoints Array to Graph Series Array
+
 
 			} else {
 						console.log('no data from request!!');
