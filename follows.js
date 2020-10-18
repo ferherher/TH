@@ -312,7 +312,7 @@
 		}
 	*/
 	function updateFeeds(numberOfDays,interval) {
-		var jsonString = 'https://www.thingspeak.com/channels/'+TSid+'/feeds.json?callback=?&amp;offset=0&amp;round=1;status=0;metadata=0;location=0;results='+numberOfDays*24*4+';key='+TSkey
+		var jsonString = 'https://www.thingspeak.com/channels/'+TSid+'/feeds.json?api_key='+TSkey+';offset=0;round=1;status=0;metadata=0;location=0;results='+numberOfDays*24*4
 		if(interval != 0) {jsonString = jsonString+';median='+interval};
 		//console.log(jsonString);
 		
